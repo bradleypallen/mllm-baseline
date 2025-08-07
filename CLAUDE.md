@@ -13,7 +13,6 @@ This repository contains a baseline machine learning framework for ranking Large
 ├── CLAUDE.md                          # This development guide
 ├── create_supervised_training_set.py  # Data preprocessing pipeline
 ├── train_full_cv_simple_progress.py   # 10-fold CV evaluation
-├── trec_submission_output.py          # TREC submission generation
 └── data/                              # All data files
     ├── llm_dev_data.tsv               # 342 development queries
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
@@ -39,7 +38,6 @@ This repository contains a baseline machine learning framework for ranking Large
 ### Generated Files
 - **data/supervised_training_full.csv**: Combined training data (query_text, llm_id, qrel)
 - **data/full_evaluation_report.json**: Actual 10-fold CV results with performance metrics
-- **quick_submission.txt**: Sample TREC submission (generated when running trec_submission_output.py)
 
 ## Baseline Model Performance
 
@@ -69,13 +67,6 @@ python train_full_cv_simple_progress.py
 - Uses TF-IDF features (1000 max features) + LLM ID encoding
 - Outputs `data/full_evaluation_report.json` with detailed results
 
-### 3. Generate TREC Submission
-```bash
-python trec_submission_output.py
-```
-- Trains on complete dataset
-- Generates `quick_submission.txt` in TREC format
-- Format: `<query_id> Q0 <llm_id> <rank> <score> <run_id>`
 
 ## Technical Implementation Details
 

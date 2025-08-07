@@ -164,7 +164,6 @@ python train_full_cv_simple_progress.py
 ├── CLAUDE.md                          # Development guidance  
 ├── create_supervised_training_set.py  # Data preprocessing pipeline
 ├── train_full_cv_simple_progress.py   # 10-fold CV evaluation and reporting
-├── trec_submission_output.py          # TREC submission generation
 └── data/                              # Data files
     ├── llm_dev_data.tsv               # 342 development queries
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
@@ -194,9 +193,6 @@ python create_supervised_training_set.py
 
 # 2. Run 10-fold cross-validation
 python train_full_cv_simple_progress.py
-
-# 3. Generate TREC submission
-python trec_submission_output.py
 ```
 
 ## Limitations and Future Work
