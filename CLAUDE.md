@@ -17,10 +17,7 @@ This repository contains a baseline machine learning framework for ranking Large
     ├── llm_dev_data.tsv               # 342 development queries
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
     ├── supervised_training_full.csv   # Processed training dataset
-    ├── full_evaluation_report.json    # Actual CV results
-    ├── llm_discovery_data_1.json      # Discovery dataset (unused in baseline)
-    ├── llm_discovery_data_2.json      # Discovery dataset (unused in baseline)
-    └── llm_discovery_metadata_1.json  # Discovery metadata (unused in baseline)
+    └── full_evaluation_report.json    # Actual CV results
 ```
 
 ## Data Files
@@ -32,8 +29,7 @@ This repository contains a baseline machine learning framework for ranking Large
   - Distribution: 92.4% score=0, 3.7% score=1, 3.8% score=2
 
 ### Discovery Data (Not Used in Baseline)
-- **data/llm_discovery_data_*.json**: 14,950 queries with LLM responses
-- **data/llm_discovery_metadata_1.json**: LLM metadata and characteristics
+- **Discovery dataset**: 14,950 queries with LLM responses (gitignored due to large file sizes)
 
 ### Generated Files
 - **data/supervised_training_full.csv**: Combined training data (query_text, llm_id, qrel)
@@ -122,11 +118,10 @@ cut -d' ' -f4 data/llm_dev_qrels.txt | sort | uniq -c
 
 ### Discovery Data Integration
 ```python
-# Example: Load discovery data
+# Example: Load discovery data (when available)
 import json
-with open('data/llm_discovery_data_1.json', 'r') as f:
-    discovery_queries = json.load(f)
-# Contains 14,950 additional queries with LLM responses
+# Discovery data contains 14,950 additional queries with LLM responses
+# Files are gitignored due to large sizes
 ```
 
 ### Feature Engineering

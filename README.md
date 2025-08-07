@@ -17,7 +17,7 @@ A machine learning framework for ranking Large Language Models (LLMs) by predict
 ### Source Data
 - **Development Queries**: 342 queries from `data/llm_dev_data.tsv` (used in this baseline)
 - **Relevance Judgments**: 386,802 query-LLM pairs from `data/llm_dev_qrels.txt` (used in this baseline)
-- **Discovery Queries**: 14,950 queries with LLM responses in `data/llm_discovery_data_*.json` (not used in this baseline implementation)
+- **Discovery Queries**: 14,950 queries with LLM responses (not used in this baseline implementation)
 - **Ground Truth Labels**: Three-level relevance scale (0=not relevant, 1=most relevant, 2=second most relevant)
 
 ### Data Distribution
@@ -168,10 +168,7 @@ python train_full_cv_simple_progress.py
     ├── llm_dev_data.tsv               # 342 development queries
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
     ├── supervised_training_full.csv   # Processed training dataset
-    ├── full_evaluation_report.json    # CV results and performance metrics
-    ├── llm_discovery_data_1.json      # Discovery dataset (not used in baseline)
-    ├── llm_discovery_data_2.json      # Discovery dataset (not used in baseline)
-    └── llm_discovery_metadata_1.json  # Discovery metadata (not used in baseline)
+    └── full_evaluation_report.json    # CV results and performance metrics
 ```
 
 ## Requirements and Usage
