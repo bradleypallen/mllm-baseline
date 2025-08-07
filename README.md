@@ -179,7 +179,7 @@ python train_full_cv_simple_progress.py
 
 ### Dependencies
 ```bash
-pip install scikit-learn pandas numpy tqdm
+pip install scikit-learn pandas numpy
 ```
 
 **System Requirements**:
