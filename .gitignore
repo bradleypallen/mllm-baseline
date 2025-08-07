@@ -1,0 +1,31 @@
+# Virtual environment
+venv/
+
+# Discovery data files (unused in baseline)
+data/llm_discovery_data_1.json
+data/llm_discovery_data_2.json
+data/llm_discovery_metadata_1.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Generated submission files
+quick_submission.txt
