@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
 """
-10-fold cross-validation on FULL dataset with simple, reliable progress tracking.
-No tqdm dependency - uses simple print statements that work in all terminals.
+XGBoost 10-fold cross-validation experimental evaluation.
+Uses same feature engineering as Random Forest baseline for fair comparison.
 """
 
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import ndcg_score, mean_squared_error, mean_absolute_error
 from sklearn.model_selection import KFold
+import xgboost as xgb
 import time
 import json
 from datetime import datetime
 import warnings
-import sys
-import os
-
-# Add path for shared utilities
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from shared.utils.evaluation import calculate_metrics
-
 warnings.filterwarnings('ignore')
+
+# Import shared utilities
+import sys
+sys.path.append('../../')
+from shared.utils import calculate_metrics, save_standardized_results
 
 def load_full_data():
     """Load the complete supervised training data"""
@@ -67,13 +65,8 @@ def create_features(df, tfidf_vectorizer=None, llm_encoder=None, fit=True):
     
     return X, y, tfidf_vectorizer, llm_encoder
 
-
 def evaluate_fold(y_true, y_pred, query_ids, llm_ids, fold_num):
     """Evaluate a single fold using shared utilities"""
-    
-    # Basic regression metrics
-    mse = mean_squared_error(y_true, y_pred)
-    mae = mean_absolute_error(y_true, y_pred)
     
     # Group by query for ranking metrics
     y_true_by_query = {}
@@ -96,9 +89,11 @@ def evaluate_fold(y_true, y_pred, query_ids, llm_ids, fold_num):
     print("    Calculating ranking metrics...")
     metrics = calculate_metrics(y_true_by_query, y_pred_by_query)
     
+    # Add MSE for comparison with other baselines
+    mse = mean_squared_error(y_true, y_pred)
+    
     return {
         'mse': mse,
-        'mae': mae,
         'ndcg_5': metrics['ndcg_5'],
         'ndcg_10': metrics['ndcg_10'],
         'mrr': metrics['mrr'],
@@ -106,10 +101,10 @@ def evaluate_fold(y_true, y_pred, query_ids, llm_ids, fold_num):
     }
 
 def cross_validate_model(df, n_folds=10, random_state=42):
-    """Perform k-fold cross-validation on queries"""
+    """Perform k-fold cross-validation on queries with XGBoost"""
     print(f"\n=== {n_folds}-FOLD CROSS-VALIDATION (FULL DATASET) ===")
     print(f"Dataset: {len(df):,} examples, {df.query_id.nunique()} queries, {df.llm_id.nunique()} LLMs")
-    print(f"Expected runtime: ~{n_folds * 6:.0f} minutes")
+    print(f"Model: XGBoost Regressor")
     
     # Get unique queries for CV splitting
     unique_queries = df['query_id'].unique()
@@ -148,17 +143,19 @@ def cross_validate_model(df, n_folds=10, random_state=42):
         X_test, y_test, _, _ = create_features(test_df, tfidf_vectorizer, llm_encoder, fit=False)
         print(f"  ✓ Features created: {X_train.shape}")
         
-        # Train model
-        model = RandomForestRegressor(
+        # Train XGBoost model
+        model = xgb.XGBRegressor(
             n_estimators=100,
-            max_depth=15,
-            min_samples_split=5,
-            min_samples_leaf=2,
+            max_depth=6,
+            learning_rate=0.1,
+            subsample=0.8,
+            colsample_bytree=0.8,
             random_state=random_state,
-            n_jobs=-1
+            n_jobs=-1,
+            verbosity=0
         )
         
-        print(f"  Training Random Forest (100 trees) on {len(X_train):,} examples...")
+        print(f"  Training XGBoost on {len(X_train):,} examples...")
         train_start = time.time()
         model.fit(X_train, y_train)
         train_time = time.time() - train_start
@@ -216,7 +213,7 @@ def analyze_cv_results(fold_results):
     results_df = pd.DataFrame(fold_results)
     
     # Calculate means and standard deviations
-    metrics = ['ndcg_10', 'ndcg_5', 'mrr', 'mse', 'mae', 'train_time']
+    metrics = ['ndcg_10', 'ndcg_5', 'mrr', 'mse', 'train_time']
     
     print("\nPerformance across folds:")
     print("-" * 60)
@@ -263,17 +260,32 @@ def analyze_cv_results(fold_results):
     
     return summary_stats
 
-def generate_comprehensive_report(fold_results, summary_stats, total_time, df):
-    """Generate comprehensive evaluation report"""
-    print(f"\n{'='*60}")
-    print("GENERATING COMPREHENSIVE REPORT")
-    print(f"{'='*60}")
+def main():
+    """Main pipeline: 10-fold CV on full dataset with XGBoost"""
+    print("="*80)
+    print("TREC 2025 MILLION LLMS TRACK - XGBOOST BASELINE")
+    print("="*80)
+    print("10-fold Cross-Validation on Complete Dataset (All 1131 LLMs)")
+    print()
     
-    # Create comprehensive report
+    overall_start = time.time()
+    
+    # Load complete dataset
+    df = load_full_data()
+    
+    # Run cross-validation
+    fold_results = cross_validate_model(df, n_folds=10)
+    
+    # Analyze results
+    summary_stats = analyze_cv_results(fold_results)
+    
+    total_time = time.time() - overall_start
+    
+    # Generate comprehensive report using shared utilities pattern
     report = {
         "evaluation_info": {
             "timestamp": datetime.now().isoformat(),
-            "pipeline": "10-fold Cross-Validation on Full Dataset",
+            "pipeline": "XGBoost Regressor (100 trees, max_depth=6)",
             "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
             "total_examples": len(df),
             "unique_queries": int(df.query_id.nunique()),
@@ -327,44 +339,13 @@ def generate_comprehensive_report(fold_results, summary_stats, total_time, df):
             "ndcg_5": round(fold_result['ndcg_5'], 4), 
             "mrr": round(fold_result['mrr'], 4),
             "mse": round(fold_result['mse'], 4),
-            "mae": round(fold_result['mae'], 4),
             "n_queries": fold_result['n_queries'],
             "train_time": round(fold_result['train_time'], 1)
         }
         report["fold_by_fold_results"].append(fold_data)
     
-    # Save JSON report
-    with open('../../data/results/random_forest_results.json', 'w') as f:
-        json.dump(report, f, indent=2)
-    
-    print("✓ ../../data/results/random_forest_results.json - Complete results with confidence intervals")
-    
-    return report
-
-def main():
-    """Main pipeline: 10-fold CV on full dataset with comprehensive reporting"""
-    print("="*80)
-    print("TREC 2025 MILLION LLMS TRACK - FULL DATASET EVALUATION")
-    print("="*80)
-    print("10-fold Cross-Validation on Complete Dataset (All 1131 LLMs)")
-    print("Expected runtime: ~60-70 minutes")
-    print()
-    
-    overall_start = time.time()
-    
-    # Load complete dataset
-    df = load_full_data()
-    
-    # Run cross-validation
-    fold_results = cross_validate_model(df, n_folds=10)
-    
-    # Analyze results
-    summary_stats = analyze_cv_results(fold_results)
-    
-    total_time = time.time() - overall_start
-    
-    # Generate comprehensive report
-    report = generate_comprehensive_report(fold_results, summary_stats, total_time, df)
+    # Save results
+    save_standardized_results(report, "xgboost", "../../data/results/")
     
     print(f"\n{'='*80}")
     print("EVALUATION COMPLETE")
@@ -375,7 +356,7 @@ def main():
     print(f"   Total runtime: {total_time/60:.1f} minutes ({total_time/3600:.2f} hours)")
     print(f"   Dataset: {len(df):,} examples, {df.query_id.nunique()} queries, {df.llm_id.nunique()} LLMs")
     
-    return fold_results, summary_stats, report
+    return fold_results, summary_stats
 
 if __name__ == "__main__":
-    fold_results, summary_stats, report = main()
+    fold_results, summary_stats = main()

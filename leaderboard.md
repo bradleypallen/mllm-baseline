@@ -1,6 +1,6 @@
 # TREC 2025 Million LLMs Track - Model Leaderboard
 
-*Generated on 2025-08-07 15:40:26*
+*Generated on 2025-08-07 16:37:16*
 
 ## Performance Comparison
 
@@ -10,6 +10,7 @@ Ranking models by nDCG@10 performance on 10-fold cross-validation.
 |------|--------|---------|--------|-----|---------|
 | 1 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
 | 2 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 3 | **Xgboost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
 
 
 ## Evaluation Protocol
@@ -38,6 +39,10 @@ Ranking models by nDCG@10 performance on 10-fold cross-validation.
 - **Performance**: nDCG@10=0.3860, MRR=0.6701
 - **Runtime**: 1.37 hours
 
+### Xgboost
+- **Performance**: nDCG@10=0.3824, MRR=0.6206
+- **Runtime**: 0.03 hours
+
 ## Usage
 
 To add a new model to the leaderboard:
@@ -50,3 +55,4 @@ To add a new model to the leaderboard:
 
 - `data/results/neural_two_tower_results.json` - Neural Two Tower detailed results
 - `data/results/random_forest_results.json` - Random Forest detailed results
+- `data/results/xgboost_results.json` - Xgboost detailed results

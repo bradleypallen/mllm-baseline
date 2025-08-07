@@ -1,0 +1,137 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-07T16:12:30.319967",
+    "pipeline": "XGBoost Regressor (100 trees, max_depth=6)",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "total_runtime_seconds": 95.7,
+    "total_runtime_minutes": 1.6,
+    "total_runtime_hours": 0.03
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.3824,
+      "std": 0.0454,
+      "min": 0.2997,
+      "max": 0.4573,
+      "confidence_interval_95": [
+        0.2934,
+        0.4715
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.3808,
+      "std": 0.0468,
+      "min": 0.3009,
+      "max": 0.4561,
+      "confidence_interval_95": [
+        0.2891,
+        0.4725
+      ]
+    },
+    "mrr": {
+      "mean": 0.6206,
+      "std": 0.0522,
+      "min": 0.5237,
+      "max": 0.7185,
+      "confidence_interval_95": [
+        0.5183,
+        0.7229
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.371,
+      "ndcg_5": 0.3471,
+      "mrr": 0.5769,
+      "mse": 0.0474,
+      "n_queries": 35,
+      "train_time": 5.5
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.3546,
+      "ndcg_5": 0.3478,
+      "mrr": 0.5934,
+      "mse": 0.0441,
+      "n_queries": 35,
+      "train_time": 5.7
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.3227,
+      "ndcg_5": 0.3266,
+      "mrr": 0.6058,
+      "mse": 0.0445,
+      "n_queries": 34,
+      "train_time": 6.2
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.2997,
+      "ndcg_5": 0.3009,
+      "mrr": 0.5237,
+      "mse": 0.0411,
+      "n_queries": 34,
+      "train_time": 6.0
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.4143,
+      "ndcg_5": 0.4144,
+      "mrr": 0.6809,
+      "mse": 0.0495,
+      "n_queries": 34,
+      "train_time": 6.7
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.371,
+      "ndcg_5": 0.3718,
+      "mrr": 0.7185,
+      "mse": 0.0447,
+      "n_queries": 34,
+      "train_time": 6.3
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.4149,
+      "ndcg_5": 0.4201,
+      "mrr": 0.6337,
+      "mse": 0.0473,
+      "n_queries": 34,
+      "train_time": 6.3
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.4157,
+      "ndcg_5": 0.412,
+      "mrr": 0.6048,
+      "mse": 0.0473,
+      "n_queries": 34,
+      "train_time": 6.2
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.4573,
+      "ndcg_5": 0.4561,
+      "mrr": 0.6563,
+      "mse": 0.0537,
+      "n_queries": 34,
+      "train_time": 6.2
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.4029,
+      "ndcg_5": 0.4115,
+      "mrr": 0.6116,
+      "mse": 0.0451,
+      "n_queries": 34,
+      "train_time": 6.2
+    }
+  ]
+}

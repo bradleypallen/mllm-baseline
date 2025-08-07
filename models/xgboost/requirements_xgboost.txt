@@ -1,0 +1,4 @@
+# XGBoost model specific requirements
+# Install with: pip install -r requirements_xgboost.txt
+
+xgboost>=1.7.0

@@ -26,64 +26,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from model import TwoTowerModel, RankingLoss, create_model
 from data_loader import create_data_loaders, load_data, LLMEvaluationDataset
+from shared.utils.evaluation import calculate_metrics
 
 warnings.filterwarnings('ignore')
 
-def mean_reciprocal_rank(y_true_by_query, y_pred_by_query):
-    """Calculate Mean Reciprocal Rank"""
-    reciprocal_ranks = []
-    
-    for query_id in y_true_by_query.keys():
-        y_true = np.array(y_true_by_query[query_id])
-        y_pred = np.array(y_pred_by_query[query_id])
-        
-        # Sort by predicted scores (descending)
-        sorted_indices = np.argsort(y_pred)[::-1]
-        sorted_true = y_true[sorted_indices]
-        
-        # Find first relevant item (relevance > 0)
-        relevant_indices = np.where(sorted_true > 0)[0]
-        if len(relevant_indices) > 0:
-            first_relevant_rank = relevant_indices[0] + 1  # 1-indexed
-            reciprocal_ranks.append(1.0 / first_relevant_rank)
-        else:
-            reciprocal_ranks.append(0.0)
-    
-    return np.mean(reciprocal_ranks)
-
-
-def evaluate_ndcg_at_k(y_true_by_query, y_pred_by_query, k=10):
-    """Calculate nDCG@k across all queries"""
-    ndcg_scores = []
-    skipped_queries = 0
-    
-    for query_id in y_true_by_query.keys():
-        y_true = y_true_by_query[query_id]
-        y_pred = y_pred_by_query[query_id]
-        
-        # Need at least 2 documents for meaningful nDCG, but handle edge cases
-        if len(y_true) < 2:
-            skipped_queries += 1
-            continue
-        
-        # Check if there's any relevance signal (not all zeros)
-        if np.sum(y_true) == 0:
-            # No relevant documents, nDCG is 0
-            ndcg_scores.append(0.0)
-        else:
-            try:
-                ndcg = ndcg_score([y_true], [y_pred], k=k)
-                ndcg_scores.append(ndcg)
-            except ValueError as e:
-                # Handle any other sklearn nDCG issues
-                skipped_queries += 1
-                continue
-    
-    if len(ndcg_scores) == 0:
-        print(f"    WARNING: No valid queries for nDCG calculation (skipped {skipped_queries})")
-        return 0.0
-    
-    return np.mean(ndcg_scores)
 
 
 def train_epoch(model, train_loader, optimizer, criterion, device):
@@ -184,10 +130,11 @@ def evaluate_model(model, val_loader, device):
         y_true_by_query[query_id] = np.array(y_true_by_query[query_id])
         y_pred_by_query[query_id] = np.array(y_pred_by_query[query_id])
     
-    # Calculate metrics
-    ndcg_10 = evaluate_ndcg_at_k(y_true_by_query, y_pred_by_query, k=10)
-    ndcg_5 = evaluate_ndcg_at_k(y_true_by_query, y_pred_by_query, k=5)
-    mrr = mean_reciprocal_rank(y_true_by_query, y_pred_by_query)
+    # Calculate metrics using shared utilities
+    metrics = calculate_metrics(y_true_by_query, y_pred_by_query)
+    ndcg_10 = metrics['ndcg_10']
+    ndcg_5 = metrics['ndcg_5']  
+    mrr = metrics['mrr']
     
     # Debug info for first few epochs
     total_queries = len(y_true_by_query)

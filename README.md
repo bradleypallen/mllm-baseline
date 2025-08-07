@@ -11,6 +11,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Current Baselines**:
 - **Random Forest Regressor**: Traditional ML with TF-IDF features and LLM identity encoding
 - **Two-Tower Neural Network**: Deep learning approach with sentence transformers and learned embeddings
+- **XGBoost Regressor**: Gradient boosting with advanced regularization and fast training
 
 ## Current Leaderboard
 
@@ -18,6 +19,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 |------|--------|---------|--------|-----|---------|
 | 1 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
 | 2 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 3 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 
@@ -36,13 +38,17 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 │   ├── random_forest/                 # Random Forest baseline
 │   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
 │   │   └── README.md                  # Model documentation
-│   └── neural_two_tower/              # Neural Two-Tower baseline
+│   ├── neural_two_tower/              # Neural Two-Tower baseline
+│   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
+│   │   ├── model.py                   # Two-tower architecture
+│   │   ├── data_loader.py             # Neural data loading
+│   │   ├── evaluate_neural.py         # Evaluation utilities
+│   │   ├── requirements_neural.txt    # Additional dependencies
+│   │   ├── performance.md             # Detailed performance analysis
+│   │   └── README.md                  # Model documentation
+│   └── xgboost/                       # XGBoost baseline
 │       ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
-│       ├── model.py                   # Two-tower architecture
-│       ├── data_loader.py             # Neural data loading
-│       ├── evaluate_neural.py         # Evaluation utilities
-│       ├── requirements_neural.txt    # Additional dependencies
-│       ├── performance.md             # Detailed performance analysis
+│       ├── requirements_xgboost.txt   # XGBoost dependencies
 │       └── README.md                  # Model documentation
 ├── shared/                            # Shared utilities
 │   └── utils/                         # Common evaluation functions
@@ -55,7 +61,8 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
     ├── supervised_training_full.csv   # Processed training dataset
     └── results/                       # Standardized model results
         ├── random_forest_results.json        # Random Forest CV results
-        └── neural_two_tower_results.json     # Neural baseline CV results
+        ├── neural_two_tower_results.json     # Neural baseline CV results
+        └── xgboost_results.json              # XGBoost CV results
 ```
 
 ## Dataset and Evaluation Protocol
@@ -95,6 +102,16 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Strengths**: Semantic understanding, better ranking quality, learned representations
 **Use Case**: Deep learning foundation, semantic query understanding
 
+### 3. XGBoost Baseline (`models/xgboost/`)
+
+**Architecture**:
+- **Features**: TF-IDF (1000 features) + LLM ID encoding (same as Random Forest)
+- **Model**: XGBoost Regressor (100 trees, max_depth=6, learning_rate=0.1)
+- **Performance**: nDCG@10=0.382, Runtime=0.03h
+
+**Strengths**: Extremely fast training, gradient boosting, built-in regularization
+**Use Case**: Rapid experimentation, efficient baseline, ensemble component
+
 ## Getting Started
 
 ### 1. Setup Environment
@@ -127,6 +144,13 @@ python evaluate_10fold_cv.py
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
+python evaluate_10fold_cv.py
+```
+
+**XGBoost** (requires additional dependencies):
+```bash
+cd models/xgboost
+pip install -r requirements_xgboost.txt
 python evaluate_10fold_cv.py
 ```
 
@@ -193,14 +217,15 @@ python generate_leaderboard.py
 ## Performance Analysis
 
 ### Current Results Summary
-- **Best nDCG@10**: Neural Two-Tower (0.402) with 4.2% improvement over Random Forest
-- **Best Runtime**: Random Forest (1.37h) is 5x faster than Neural approach
-- **Most Consistent**: Neural Two-Tower shows lower variance (±0.028 vs ±0.044)
-- **MRR Performance**: Both models achieve strong first-relevant ranking (MRR ~0.67)
+- **Best nDCG@10**: Neural Two-Tower (0.402) leads by 4.2% over Random Forest
+- **Best Runtime**: XGBoost (0.03h) is ultra-fast, 46x faster than Random Forest, 232x faster than Neural
+- **Most Consistent**: Neural Two-Tower shows lowest variance (±0.028)
+- **MRR Performance**: Neural (0.676) and Random Forest (0.670) achieve strong MRR; XGBoost lower (0.621)
 
 ### Model Trade-offs
-- **Random Forest**: Fast, interpretable, good baseline, limited semantic understanding
-- **Neural Two-Tower**: Better performance, semantic features, longer training time, GPU beneficial
+- **Neural Two-Tower**: Best performance, semantic features, longest training time, GPU beneficial
+- **Random Forest**: Good balance of performance and interpretability, moderate training time
+- **XGBoost**: Ultra-fast training, competitive performance, excellent for rapid experimentation
 
 ## Requirements
 
@@ -218,6 +243,13 @@ pip install -r requirements.txt
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
 # Installs: torch, sentence-transformers, transformers, etc.
+```
+
+**XGBoost**: Additional dependency for gradient boosting
+```bash
+cd models/xgboost
+pip install -r requirements_xgboost.txt
+# Installs: xgboost (and libomp on macOS)
 ```
 
 ### System Requirements
