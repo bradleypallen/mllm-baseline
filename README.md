@@ -170,7 +170,6 @@ python train_full_cv_simple_progress.py
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
     ├── supervised_training_full.csv   # Processed training dataset
     ├── full_evaluation_report.json    # CV results and performance metrics
-    ├── training_metadata.json         # Dataset creation metadata
     ├── llm_discovery_data_1.json      # Discovery dataset (not used in baseline)
     ├── llm_discovery_data_2.json      # Discovery dataset (not used in baseline)
     └── llm_discovery_metadata_1.json  # Discovery metadata (not used in baseline)

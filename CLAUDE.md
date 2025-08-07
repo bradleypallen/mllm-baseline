@@ -19,7 +19,6 @@ This repository contains a baseline machine learning framework for ranking Large
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
     ├── supervised_training_full.csv   # Processed training dataset
     ├── full_evaluation_report.json    # Actual CV results
-    ├── training_metadata.json         # Dataset creation metadata
     ├── llm_discovery_data_1.json      # Discovery dataset (unused in baseline)
     ├── llm_discovery_data_2.json      # Discovery dataset (unused in baseline)
     └── llm_discovery_metadata_1.json  # Discovery metadata (unused in baseline)
@@ -60,7 +59,6 @@ python create_supervised_training_set.py
 ```
 - Reads `data/llm_dev_data.tsv` and `data/llm_dev_qrels.txt`
 - Creates `data/supervised_training_full.csv` with 386,802 examples
-- Generates `data/training_metadata.json` with dataset statistics
 
 ### 2. Run 10-Fold Cross-Validation
 ```bash
