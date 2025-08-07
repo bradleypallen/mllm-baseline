@@ -1,0 +1,13 @@
+# TREC 2025 Million LLMs Track - Multi-Model Baseline Framework
+# Core requirements for basic functionality and Random Forest baseline
+
+# Data processing and analysis
+pandas>=1.5.0
+numpy>=1.21.0
+
+# Machine learning and evaluation
+scikit-learn>=1.1.0
+
+# Note: Additional model-specific requirements:
+# - Neural models: see models/neural_two_tower/requirements_neural.txt
+# - Future models: see models/[model_name]/requirements_[model_name].txt

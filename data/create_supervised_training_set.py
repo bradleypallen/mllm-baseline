@@ -14,13 +14,13 @@ def main():
     
     # Load dev queries
     print("Loading query text...")
-    dev_queries_df = pd.read_csv('data/llm_dev_data.tsv', sep='\t', header=None,
+    dev_queries_df = pd.read_csv('llm_dev_data.tsv', sep='\t', header=None,
                                 names=['query_id', 'query_text'],
                                 dtype={'query_id': str})
     
     # Load relevance judgments
     print("Loading relevance judgments...")
-    qrels_df = pd.read_csv('data/llm_dev_qrels.txt', sep=' ', header=None,
+    qrels_df = pd.read_csv('llm_dev_qrels.txt', sep=' ', header=None,
                           names=['query_id', 'iteration', 'llm_id', 'qrel'],
                           dtype={'query_id': str, 'llm_id': str})
     
@@ -34,12 +34,12 @@ def main():
     
     # Save dataset
     print("Saving supervised training set...")
-    training_df.to_csv('data/supervised_training_full.csv', index=False)
+    training_df.to_csv('supervised_training_full.csv', index=False)
     
     print(f"✓ Generated supervised training set: {len(training_df):,} examples")
     print(f"✓ Queries: {training_df.query_id.nunique()}")
     print(f"✓ LLMs: {training_df.llm_id.nunique()}")
-    print("✓ Saved to: data/supervised_training_full.csv")
+    print("✓ Saved to: supervised_training_full.csv")
 
 if __name__ == "__main__":
     main()

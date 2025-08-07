@@ -1,0 +1,19 @@
+# Neural Baseline Additional Requirements
+# Install with: pip install -r neural_baseline/requirements_neural.txt
+
+# Core ML/DL frameworks
+torch>=2.0.0
+sentence-transformers>=2.2.0
+transformers>=4.20.0
+
+# Plotting and visualization
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Additional utilities
+accelerate>=0.20.0  # For faster training if available
+
+# Already included in main requirements:
+# pandas
+# numpy
+# scikit-learn

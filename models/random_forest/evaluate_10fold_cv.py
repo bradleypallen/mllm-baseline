@@ -20,7 +20,7 @@ warnings.filterwarnings('ignore')
 def load_full_data():
     """Load the complete supervised training data"""
     print("Loading FULL training dataset...")
-    df = pd.read_csv('data/supervised_training_full.csv')
+    df = pd.read_csv('../../data/supervised_training_full.csv')
     print(f"✓ Loaded {len(df):,} examples")
     print(f"  Queries: {df.query_id.nunique()}")
     print(f"  LLMs: {df.llm_id.nunique()}")
@@ -364,10 +364,10 @@ def generate_comprehensive_report(fold_results, summary_stats, total_time, df):
         report["fold_by_fold_results"].append(fold_data)
     
     # Save JSON report
-    with open('data/full_evaluation_report.json', 'w') as f:
+    with open('../../data/results/random_forest_results.json', 'w') as f:
         json.dump(report, f, indent=2)
     
-    print("✓ data/full_evaluation_report.json - Complete results with confidence intervals")
+    print("✓ ../../data/results/random_forest_results.json - Complete results with confidence intervals")
     
     return report
 
