@@ -69,7 +69,7 @@ python train_full_cv_simple_progress.py
 ### Feature Engineering
 - **Text Features**: TF-IDF vectorization (max_features=1000, ngram_range=(1,2))
 - **LLM Features**: Label encoding of LLM identifiers  
-- **Target**: qrel scores normalized to [0,1] (0→0.0, 1→0.5, 2→1.0)
+- **Target**: qrel scores mapped to relevance values (0→0.0, 2→0.7, 1→1.0)
 
 ### Model Configuration
 - **Algorithm**: Random Forest Regressor

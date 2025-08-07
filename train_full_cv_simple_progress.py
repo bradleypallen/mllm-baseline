@@ -53,8 +53,10 @@ def create_features(df, tfidf_vectorizer=None, llm_encoder=None, fit=True):
     X_llm = llm_encoded.reshape(-1, 1)
     X = np.hstack([X_text, X_llm])
     
-    # Target: Convert qrel scores to [0,1] interval
-    y = df['qrel'].values / 2.0
+    # Target: Convert qrel scores to correct relevance values
+    # 0 (not relevant) → 0.0, 2 (second-most relevant) → 0.7, 1 (most relevant) → 1.0
+    qrel_mapping = {0: 0.0, 1: 1.0, 2: 0.7}
+    y = df['qrel'].map(qrel_mapping).values
     
     return X, y, tfidf_vectorizer, llm_encoder
 

@@ -32,7 +32,7 @@ python create_supervised_training_set.py
 
 **Preprocessing Steps**:
 1. **Query Text Integration**: Join development queries with relevance judgments by query_id
-2. **Target Normalization**: Convert qrel scores to [0,1] interval (0→0.0, 1→0.5, 2→1.0)
+2. **Target Normalization**: Convert qrel scores to relevance values (0→0.0, 2→0.7, 1→1.0)
 3. **Feature Matrix Creation**: Combine TF-IDF text features with label-encoded LLM identifiers
 4. **Training Set Generation**: Output 386,802 examples to `data/supervised_training_full.csv` with query_text, llm_id, and normalized qrel columns
 
@@ -61,7 +61,7 @@ python create_supervised_training_set.py
 - **Integration**: Single additional feature column appended to TF-IDF matrix
 
 **Regression Objective**:
-- **Target**: Continuous relevance scores in [0,1] interval
+- **Target**: Continuous relevance scores (0.0=not relevant, 0.7=second-most relevant, 1.0=most relevant)
 - **Loss Function**: Mean squared error minimization
 - **Prediction Clipping**: Outputs bounded to [0,1] range
 - **Ensemble Averaging**: Final predictions from mean of 100 tree outputs
