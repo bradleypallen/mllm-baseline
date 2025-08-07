@@ -11,7 +11,6 @@ This repository contains a baseline machine learning framework for ranking Large
 ```
 ├── README.md                          # Main documentation
 ├── CLAUDE.md                          # This development guide
-├── EVALUATION_RESULTS.md              # Detailed CV performance analysis
 ├── create_supervised_training_set.py  # Data preprocessing pipeline
 ├── train_full_cv_simple_progress.py   # 10-fold CV evaluation
 ├── trec_submission_output.py          # TREC submission generation

@@ -1,6 +1,6 @@
-# TREC 2025 Million LLMs Track - Supervised Learning Framework
+# TREC 2025 Million LLMs Track - Random Forest Regressor Baseline
 
-A machine learning framework for ranking Large Language Models (LLMs) by predicted expertise on user queries, developed for the [TREC 2025 Million LLMs Track](https://trec-mllm.github.io/).
+A machine learning framework for ranking Large Language Models (LLMs) by predicted expertise on user queries, developed for the [TREC 2025 Million LLMs Track](https://trec-mllm.github.io/) as a baseline for understanding how to approach the task.
 
 ## Experimental Overview
 
@@ -38,6 +38,15 @@ python create_supervised_training_set.py
 
 ## Model Architecture
 
+### Model Type: Random Forest Regressor
+
+**Architecture Configuration**:
+- **Estimators**: 100 decision trees
+- **Max Depth**: 15 levels to balance expressiveness and overfitting prevention
+- **Min Samples Split**: 5 examples required for internal node splits
+- **Min Samples Leaf**: 2 examples required at terminal nodes
+- **Parallelization**: Multi-threaded training with n_jobs=-1
+
 ### Feature Engineering
 
 **Text Features (TF-IDF Vectorization)**:
@@ -50,15 +59,6 @@ python create_supervised_training_set.py
 - **Encoding**: Label encoding of LLM identifiers (llm_0000 → 0, llm_0001 → 1, ...)
 - **Purpose**: Enable model to learn relative performance patterns across LLMs
 - **Integration**: Single additional feature column appended to TF-IDF matrix
-
-### Model Selection: Random Forest Regressor
-
-**Architecture Configuration**:
-- **Estimators**: 100 decision trees
-- **Max Depth**: 15 levels to balance expressiveness and overfitting prevention
-- **Min Samples Split**: 5 examples required for internal node splits
-- **Min Samples Leaf**: 2 examples required at terminal nodes
-- **Parallelization**: Multi-threaded training with n_jobs=-1
 
 **Regression Objective**:
 - **Target**: Continuous relevance scores in [0,1] interval
@@ -106,8 +106,6 @@ python train_full_cv_simple_progress.py
 4. **Aggregation**: Compute mean performance across all test queries
 
 ## Performance Results
-
-> **📊 Detailed Results**: See [EVALUATION_RESULTS.md](./EVALUATION_RESULTS.md) for comprehensive analysis of all evaluation metrics and fold-by-fold breakdowns.
 
 ### 10-Fold Cross-Validation Performance
 | Metric | Mean | Std | 95% Confidence Interval | Min | Max |
@@ -158,19 +156,6 @@ python train_full_cv_simple_progress.py
 - **Query-Driven Ranking**: Text features dominate, indicating strong query-specific expertise patterns
 - **LLM-Specific Performance**: Identity features capture consistent relative performance across LLMs
 - **Balanced Contribution**: Both feature types contribute significantly to ranking quality
-
-## Model Architecture Rationale
-
-**Why Random Forest Regression**:
-1. **Mixed Feature Handling**: Seamlessly combines sparse TF-IDF with categorical LLM encoding
-2. **Overfitting Resistance**: Ensemble averaging prevents memorization of specific query-LLM pairs
-3. **Interpretability**: Feature importance analysis reveals query vs. LLM contribution patterns
-4. **Scalability**: Efficient training on 386K examples with acceptable wall-clock time
-
-**Why Regression over Classification**:
-1. **Ranking Output**: Continuous scores enable precise LLM ordering within queries
-2. **Uncertainty Quantification**: Score magnitudes indicate confidence in relevance predictions
-3. **Flexible Thresholding**: Post-hoc calibration possible for different relevance cutoffs
 
 ## File Structure and Pipeline
 
@@ -237,4 +222,3 @@ This implementation serves as a baseline for developing more advanced ranking mo
 - **Sophisticated Architectures**: Neural ranking models, transformer-based approaches, and ensemble methods
 - **Transfer Learning**: Pre-trained language models fine-tuned for LLM ranking tasks
 
-The current baseline establishes nDCG@10 = 0.357 ± 0.057 and MRR = 0.623 ± 0.087 as reference performance metrics for future model development.
