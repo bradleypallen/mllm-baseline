@@ -1,147 +1,147 @@
 {
   "evaluation_info": {
-    "timestamp": "2025-08-06T18:34:39.025612",
+    "timestamp": "2025-08-06T22:20:09.691274",
     "pipeline": "10-fold Cross-Validation on Full Dataset",
     "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
     "total_examples": 386801,
     "unique_queries": 342,
     "unique_llms": 1131,
-    "total_runtime_seconds": 7007.9,
-    "total_runtime_minutes": 116.8,
-    "total_runtime_hours": 1.95
+    "total_runtime_seconds": 4919.1,
+    "total_runtime_minutes": 82.0,
+    "total_runtime_hours": 1.37
   },
   "performance_metrics": {
     "ndcg_10": {
-      "mean": 0.3566,
-      "std": 0.0571,
-      "min": 0.2574,
-      "max": 0.4455,
+      "mean": 0.386,
+      "std": 0.0436,
+      "min": 0.3006,
+      "max": 0.457,
       "confidence_interval_95": [
-        0.2447,
-        0.4685
+        0.3006,
+        0.4715
       ]
     },
     "ndcg_5": {
-      "mean": 0.3496,
-      "std": 0.0574,
-      "min": 0.2589,
-      "max": 0.4544,
+      "mean": 0.3871,
+      "std": 0.05,
+      "min": 0.2935,
+      "max": 0.4786,
       "confidence_interval_95": [
-        0.2371,
-        0.4622
+        0.2891,
+        0.4852
       ]
     },
     "mrr": {
-      "mean": 0.6227,
-      "std": 0.0866,
-      "min": 0.484,
-      "max": 0.7753,
+      "mean": 0.6701,
+      "std": 0.0809,
+      "min": 0.514,
+      "max": 0.8244,
       "confidence_interval_95": [
-        0.453,
-        0.7924
+        0.5117,
+        0.8286
       ]
     }
   },
   "fold_by_fold_results": [
     {
       "fold": 1,
-      "ndcg_10": 0.374,
-      "ndcg_5": 0.3733,
-      "mrr": 0.6648,
-      "mse": 0.0404,
-      "mae": 0.0896,
+      "ndcg_10": 0.4063,
+      "ndcg_5": 0.3901,
+      "mrr": 0.6204,
+      "mse": 0.0455,
+      "mae": 0.0974,
       "n_queries": 35,
-      "train_time": 895.2
+      "train_time": 429.2
     },
     {
       "fold": 2,
-      "ndcg_10": 0.3268,
-      "ndcg_5": 0.3086,
-      "mrr": 0.5375,
-      "mse": 0.0352,
-      "mae": 0.084,
+      "ndcg_10": 0.3579,
+      "ndcg_5": 0.3526,
+      "mrr": 0.6363,
+      "mse": 0.0415,
+      "mae": 0.0935,
       "n_queries": 35,
-      "train_time": 584.0
+      "train_time": 441.8
     },
     {
       "fold": 3,
-      "ndcg_10": 0.2778,
-      "ndcg_5": 0.2822,
-      "mrr": 0.5173,
-      "mse": 0.0354,
-      "mae": 0.0856,
+      "ndcg_10": 0.3405,
+      "ndcg_5": 0.3659,
+      "mrr": 0.6845,
+      "mse": 0.0428,
+      "mae": 0.0962,
       "n_queries": 34,
-      "train_time": 614.4
+      "train_time": 446.8
     },
     {
       "fold": 4,
-      "ndcg_10": 0.2574,
-      "ndcg_5": 0.2589,
-      "mrr": 0.484,
-      "mse": 0.0281,
-      "mae": 0.0782,
+      "ndcg_10": 0.3006,
+      "ndcg_5": 0.2935,
+      "mrr": 0.514,
+      "mse": 0.0392,
+      "mae": 0.0928,
       "n_queries": 34,
-      "train_time": 633.2
+      "train_time": 468.0
     },
     {
       "fold": 5,
-      "ndcg_10": 0.3792,
-      "ndcg_5": 0.3611,
-      "mrr": 0.626,
-      "mse": 0.0421,
-      "mae": 0.0919,
+      "ndcg_10": 0.457,
+      "ndcg_5": 0.4786,
+      "mrr": 0.8244,
+      "mse": 0.046,
+      "mae": 0.0999,
       "n_queries": 34,
-      "train_time": 667.5
+      "train_time": 519.2
     },
     {
       "fold": 6,
-      "ndcg_10": 0.3626,
-      "ndcg_5": 0.347,
-      "mrr": 0.705,
-      "mse": 0.0412,
-      "mae": 0.0901,
+      "ndcg_10": 0.371,
+      "ndcg_5": 0.3486,
+      "mrr": 0.6271,
+      "mse": 0.0417,
+      "mae": 0.0964,
       "n_queries": 34,
-      "train_time": 658.9
+      "train_time": 499.5
     },
     {
       "fold": 7,
-      "ndcg_10": 0.4326,
-      "ndcg_5": 0.4544,
-      "mrr": 0.7753,
-      "mse": 0.0416,
-      "mae": 0.0896,
+      "ndcg_10": 0.4289,
+      "ndcg_5": 0.4471,
+      "mrr": 0.7385,
+      "mse": 0.0443,
+      "mae": 0.0975,
       "n_queries": 34,
-      "train_time": 688.1
+      "train_time": 511.8
     },
     {
       "fold": 8,
-      "ndcg_10": 0.379,
-      "ndcg_5": 0.3689,
-      "mrr": 0.6315,
-      "mse": 0.0443,
-      "mae": 0.091,
+      "ndcg_10": 0.3932,
+      "ndcg_5": 0.382,
+      "mrr": 0.6331,
+      "mse": 0.0451,
+      "mae": 0.0967,
       "n_queries": 34,
-      "train_time": 789.7
+      "train_time": 515.8
     },
     {
       "fold": 9,
-      "ndcg_10": 0.4455,
-      "ndcg_5": 0.4235,
-      "mrr": 0.691,
-      "mse": 0.0503,
-      "mae": 0.1005,
+      "ndcg_10": 0.4215,
+      "ndcg_5": 0.4202,
+      "mrr": 0.7435,
+      "mse": 0.05,
+      "mae": 0.1068,
       "n_queries": 34,
-      "train_time": 762.2
+      "train_time": 525.0
     },
     {
       "fold": 10,
-      "ndcg_10": 0.3312,
-      "ndcg_5": 0.3182,
-      "mrr": 0.5946,
-      "mse": 0.0319,
-      "mae": 0.0827,
+      "ndcg_10": 0.3834,
+      "ndcg_5": 0.3928,
+      "mrr": 0.6795,
+      "mse": 0.0422,
+      "mae": 0.0946,
       "n_queries": 34,
-      "train_time": 676.9
+      "train_time": 532.0
     }
   ]
 }

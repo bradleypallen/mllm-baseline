@@ -40,10 +40,10 @@ This repository contains a baseline machine learning framework for ranking Large
 Based on the actual results in `data/full_evaluation_report.json`:
 
 **10-Fold Cross-Validation Results (All 1,131 LLMs)**:
-- **nDCG@10**: 0.3566 ± 0.0571 (95% CI: [0.2447, 0.4685])
-- **nDCG@5**: 0.3496 ± 0.0574 (95% CI: [0.2371, 0.4622]) 
-- **MRR**: 0.6227 ± 0.0866 (95% CI: [0.4530, 0.7924])
-- **Runtime**: 1.95 hours total, ~11 minutes per fold
+- **nDCG@10**: 0.3860 ± 0.0436 (95% CI: [0.3006, 0.4715])
+- **nDCG@5**: 0.3871 ± 0.0500 (95% CI: [0.2891, 0.4852]) 
+- **MRR**: 0.6701 ± 0.0809 (95% CI: [0.5117, 0.8286])
+- **Runtime**: 1.37 hours total, ~8 minutes per fold
 
 ## Common Development Tasks
 
@@ -62,6 +62,7 @@ python train_full_cv_simple_progress.py
 - Trains Random Forest Regressor (100 trees, max_depth=15)
 - Uses TF-IDF features (1000 max features) + LLM ID encoding
 - Outputs `data/full_evaluation_report.json` with detailed results
+- Current results: nDCG@10=0.386, MRR=0.670 with corrected qrel encoding
 
 
 ## Technical Implementation Details
@@ -87,7 +88,8 @@ python train_full_cv_simple_progress.py
 ## Performance Analysis
 
 ### Current Baseline Strengths
-- **MRR > nDCG**: Good at finding first relevant LLM (MRR=0.623 vs nDCG@10=0.357)
+- **Strong MRR Performance**: Excellent at finding first relevant LLM (MRR=0.670)
+- **Improved nDCG**: Better overall ranking quality (nDCG@10=0.386) with corrected encoding
 - **Low Variance**: Consistent performance across folds (std < 0.1)
 - **Complete Coverage**: Uses all 1,131 LLMs and 342 queries
 

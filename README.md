@@ -110,30 +110,29 @@ python train_full_cv_simple_progress.py
 ### 10-Fold Cross-Validation Performance
 | Metric | Mean | Std | 95% Confidence Interval | Min | Max |
 |---------|------|-----|-------------------------|-----|-----|
-| **nDCG@10** | 0.3566 | 0.0571 | [0.2447, 0.4685] | 0.2574 | 0.4455 |
-| **nDCG@5** | 0.3496 | 0.0574 | [0.2371, 0.4622] | 0.2589 | 0.4544 |
-| **MRR** | 0.6227 | 0.0866 | [0.4530, 0.7924] | 0.4840 | 0.7753 |
-| **MSE** | 0.0391 | 0.0063 | [0.0268, 0.0514] | 0.0281 | 0.0503 |
+| **nDCG@10** | 0.3860 | 0.0436 | [0.3006, 0.4715] | 0.3006 | 0.4570 |
+| **nDCG@5** | 0.3871 | 0.0500 | [0.2891, 0.4852] | 0.2935 | 0.4786 |
+| **MRR** | 0.6701 | 0.0809 | [0.5117, 0.8286] | 0.5140 | 0.8244 |
 
 ### Fold-by-Fold Detailed Results
 | Fold | nDCG@10 | nDCG@5 | MRR | MSE | Queries | Train Time (min) |
 |------|---------|--------|-----|-----|---------|------------------|
-| 1 | 0.3740 | 0.3733 | 0.6648 | 0.0404 | 35 | 14.9 |
-| 2 | 0.3268 | 0.3086 | 0.5375 | 0.0352 | 35 | 9.7 |
-| 3 | 0.2778 | 0.2822 | 0.5173 | 0.0354 | 34 | 10.2 |
-| 4 | 0.2574 | 0.2589 | 0.4840 | 0.0281 | 34 | 10.6 |
-| 5 | 0.3792 | 0.3611 | 0.6260 | 0.0421 | 34 | 11.1 |
-| 6 | 0.3626 | 0.3470 | 0.7050 | 0.0412 | 34 | 11.0 |
-| 7 | 0.4326 | 0.4544 | 0.7753 | 0.0416 | 34 | 11.5 |
-| 8 | 0.3790 | 0.3689 | 0.6315 | 0.0443 | 34 | 13.2 |
-| 9 | 0.4455 | 0.4235 | 0.6910 | 0.0503 | 34 | 12.7 |
-| 10 | 0.3312 | 0.3182 | 0.5946 | 0.0319 | 34 | 11.3 |
+| 1 | 0.4063 | 0.3901 | 0.6204 | 0.0455 | 35 | 7.2 |
+| 2 | 0.3579 | 0.3526 | 0.6363 | 0.0415 | 35 | 7.4 |
+| 3 | 0.3405 | 0.3659 | 0.6845 | 0.0428 | 34 | 7.4 |
+| 4 | 0.3006 | 0.2935 | 0.5140 | 0.0392 | 34 | 7.8 |
+| 5 | 0.4570 | 0.4786 | 0.8244 | 0.0460 | 34 | 8.7 |
+| 6 | 0.3710 | 0.3486 | 0.6271 | 0.0417 | 34 | 8.3 |
+| 7 | 0.4289 | 0.4471 | 0.7385 | 0.0443 | 34 | 8.5 |
+| 8 | 0.3932 | 0.3820 | 0.6331 | 0.0451 | 34 | 8.6 |
+| 9 | 0.4215 | 0.4202 | 0.7435 | 0.0500 | 34 | 8.8 |
+| 10 | 0.3834 | 0.3928 | 0.6795 | 0.0422 | 34 | 8.9 |
 
 ### Key Performance Insights
 
 **Ranking Performance**:
-- **nDCG@10 (0.357)**: Moderate ranking quality with room for improvement in overall relevance ordering
-- **MRR (0.623)**: Average reciprocal rank of ~1.6 indicates frequent top-3 relevant placements
+- **nDCG@10 (0.386)**: Improved ranking quality with corrected qrel encoding
+- **MRR (0.670)**: Average reciprocal rank of ~1.5 indicates strong top-ranking performance
 - **Consistent nDCG@5 vs nDCG@10**: Performance plateau suggests top-5 ranking captures most relevance
 
 **Model Stability**:
@@ -142,8 +141,8 @@ python train_full_cv_simple_progress.py
 - **Fold Consistency**: No extreme outlier folds, indicating stable learning across query distributions
 
 **Computational Requirements**:
-- **Training Time**: ~11 minutes per fold (348,000 examples) for full dataset training
-- **Total Runtime**: 1.95 hours for complete 10-fold cross-validation
+- **Training Time**: ~8 minutes per fold (348,000 examples) for full dataset training
+- **Total Runtime**: 1.37 hours for complete 10-fold cross-validation
 - **Inference Time**: Sub-second prediction for TREC submission generation
 
 ## Feature Importance Analysis
