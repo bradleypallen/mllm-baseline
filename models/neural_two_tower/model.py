@@ -13,6 +13,51 @@ import torch.nn.functional as F
 from sentence_transformers import SentenceTransformer
 
 
+class MultiHeadQueryAttention(nn.Module):
+    """Simple multi-head attention for query processing"""
+    
+    def __init__(self, input_dim=384, num_heads=4, head_dim=96, dropout=0.2):
+        super(MultiHeadQueryAttention, self).__init__()
+        self.num_heads = num_heads
+        self.head_dim = head_dim
+        
+        # Create identical heads - let training differentiate them
+        self.heads = nn.ModuleList([
+            nn.Sequential(
+                nn.Linear(input_dim, head_dim),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(head_dim, head_dim)
+            ) for _ in range(num_heads)
+        ])
+        
+        # Fusion layer to combine all heads
+        self.fusion = nn.Sequential(
+            nn.Linear(num_heads * head_dim, input_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout)
+        )
+    
+    def forward(self, x):
+        """
+        Args:
+            x: [batch_size, input_dim] sentence embeddings
+        Returns:
+            fused_output: [batch_size, input_dim] multi-head representation
+            head_outputs: List of individual head outputs for analysis
+        """
+        # Process input through each head
+        head_outputs = [head(x) for head in self.heads]
+        
+        # Concatenate all heads
+        concatenated = torch.cat(head_outputs, dim=1)  # [batch_size, num_heads * head_dim]
+        
+        # Fuse into final representation
+        fused_output = self.fusion(concatenated)  # [batch_size, input_dim]
+        
+        return fused_output, head_outputs
+
+
 class QueryTower(nn.Module):
     """Neural network tower for processing query text"""
     
@@ -77,7 +122,7 @@ class TwoTowerModel(nn.Module):
     """Two-Tower architecture for query-LLM ranking"""
     
     def __init__(self, num_llms, query_embedding_model='all-MiniLM-L6-v2', 
-                 embedding_dim=128, dropout=0.2):
+                 embedding_dim=128, dropout=0.2, use_multi_head=True, num_heads=4):
         super(TwoTowerModel, self).__init__()
         
         # Pre-trained sentence transformer for query embeddings
@@ -85,6 +130,16 @@ class TwoTowerModel(nn.Module):
         
         # Get embedding dimension from sentence transformer
         query_input_dim = self.sentence_transformer.get_sentence_embedding_dimension()
+        
+        # Multi-head attention (optional)
+        self.use_multi_head = use_multi_head
+        if use_multi_head:
+            self.multi_head_attention = MultiHeadQueryAttention(
+                input_dim=query_input_dim,
+                num_heads=num_heads,
+                head_dim=query_input_dim // num_heads,  # Distribute dimensions evenly
+                dropout=dropout
+            )
         
         # Query and LLM towers with enhanced dimensions
         self.query_tower = QueryTower(
@@ -103,14 +158,30 @@ class TwoTowerModel(nn.Module):
         )
         
     def encode_queries(self, query_texts):
-        """Encode query texts using sentence transformer + query tower"""
-        # Get sentence transformer embeddings
-        query_embeddings = self.sentence_transformer.encode(
-            query_texts, convert_to_tensor=True, device=next(self.parameters()).device
-        )
+        """Encode query texts using sentence transformer + optional multi-head + query tower"""
+        # Get sentence transformer embeddings (keep on CPU for MPS compatibility)
+        model_device = next(self.parameters()).device
+        if str(model_device) == 'mps':
+            # Use CPU for sentence transformer, then move to MPS
+            query_embeddings = self.sentence_transformer.encode(
+                query_texts, convert_to_tensor=True, device='cpu'
+            )
+            query_embeddings = query_embeddings.to(model_device)
+        else:
+            # Standard behavior for CUDA/CPU
+            query_embeddings = self.sentence_transformer.encode(
+                query_texts, convert_to_tensor=True, device=model_device
+            )
         
         # Clone to create a proper autograd tensor
         query_embeddings = query_embeddings.clone().requires_grad_(False)
+        
+        # Apply multi-head attention if enabled
+        if self.use_multi_head:
+            query_embeddings, head_outputs = self.multi_head_attention(query_embeddings)
+            # Store head outputs for analysis (optional)
+            if hasattr(self, '_store_head_outputs') and self._store_head_outputs:
+                self._last_head_outputs = head_outputs
         
         # Pass through query tower
         return self.query_tower(query_embeddings)
@@ -137,10 +208,19 @@ class TwoTowerModel(nn.Module):
         """Prediction for evaluation (no gradients)"""
         self.eval()
         with torch.no_grad():
-            # Get sentence transformer embeddings
-            query_embeddings = self.sentence_transformer.encode(
-                query_texts, convert_to_tensor=True, device=next(self.parameters()).device
-            )
+            # Get sentence transformer embeddings (MPS compatibility)
+            model_device = next(self.parameters()).device
+            if str(model_device) == 'mps':
+                # Use CPU for sentence transformer, then move to MPS
+                query_embeddings = self.sentence_transformer.encode(
+                    query_texts, convert_to_tensor=True, device='cpu'
+                )
+                query_embeddings = query_embeddings.to(model_device)
+            else:
+                # Standard behavior for CUDA/CPU
+                query_embeddings = self.sentence_transformer.encode(
+                    query_texts, convert_to_tensor=True, device=model_device
+                )
             llm_embeddings = self.encode_llms(llm_ids)
             
             # Pass through towers
@@ -174,14 +254,15 @@ class RankingLoss(nn.Module):
         return loss.mean()
 
 
-class ContrastiveLoss(nn.Module):
-    """InfoNCE-style contrastive loss for better representation learning"""
+class ContrastiveLossWithDiversity(nn.Module):
+    """InfoNCE-style contrastive loss with head diversity regularization"""
     
-    def __init__(self, temperature=0.1):
-        super(ContrastiveLoss, self).__init__()
+    def __init__(self, temperature=0.1, diversity_weight=0.1):
+        super(ContrastiveLossWithDiversity, self).__init__()
         self.temperature = temperature
+        self.diversity_weight = diversity_weight
         
-    def forward(self, query_embeddings, positive_embeddings, negative_embeddings):
+    def forward(self, query_embeddings, positive_embeddings, negative_embeddings, head_outputs=None):
         """
         Args:
             query_embeddings: Query representations [batch_size, embed_dim]
@@ -208,7 +289,37 @@ class ContrastiveLoss(nn.Module):
         # Labels: positive is always at index 0
         labels = torch.zeros(batch_size, dtype=torch.long, device=query_embeddings.device)
         
-        return F.cross_entropy(logits, labels)
+        # Main contrastive loss
+        main_loss = F.cross_entropy(logits, labels)
+        
+        # Head diversity regularization (if head outputs provided)
+        diversity_loss = 0.0
+        if head_outputs is not None and self.diversity_weight > 0:
+            diversity_loss = self.compute_head_diversity_loss(head_outputs)
+        
+        return main_loss + self.diversity_weight * diversity_loss
+    
+    def compute_head_diversity_loss(self, head_outputs):
+        """Encourage different heads to learn different representations"""
+        num_heads = len(head_outputs)
+        if num_heads <= 1:
+            return 0.0
+        
+        diversity_loss = 0.0
+        count = 0
+        
+        for i in range(num_heads):
+            for j in range(i+1, num_heads):
+                # Compute cosine similarity between heads
+                head_i_norm = F.normalize(head_outputs[i], p=2, dim=1)
+                head_j_norm = F.normalize(head_outputs[j], p=2, dim=1)
+                similarity = torch.sum(head_i_norm * head_j_norm, dim=1).mean()
+                
+                # Penalize high similarity
+                diversity_loss += similarity ** 2
+                count += 1
+        
+        return diversity_loss / count if count > 0 else 0.0
 
 
 class TripletLoss(nn.Module):
@@ -229,9 +340,9 @@ class TripletLoss(nn.Module):
         return loss.mean()
 
 
-def create_model(num_llms, device='cpu'):
+def create_model(num_llms, device='cpu', use_multi_head=True, num_heads=4):
     """Create and initialize Two-Tower model"""
-    model = TwoTowerModel(num_llms=num_llms)
+    model = TwoTowerModel(num_llms=num_llms, use_multi_head=use_multi_head, num_heads=num_heads)
     model = model.to(device)
     
     # Initialize weights

@@ -272,14 +272,15 @@ class LLMEvaluationDataset(Dataset):
         }
 
 
-def create_data_loaders(train_df, val_df, batch_size=32, negative_samples=4):
+def create_data_loaders(train_df, val_df, batch_size=32, negative_samples=4, hard_negative_miner=None):
     """Create training and validation data loaders"""
     
-    # Create training dataset with negative sampling
+    # Create training dataset with negative sampling and optional hard negative mining
     train_dataset = LLMRankingDataset(
         train_df, 
         negative_samples_per_positive=negative_samples,
-        fit_encoder=True
+        fit_encoder=True,
+        hard_negative_miner=hard_negative_miner
     )
     
     # Create validation dataset (no negative sampling for evaluation)

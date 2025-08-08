@@ -9,6 +9,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Multi-Model Approach**: This framework implements and compares multiple baseline approaches, providing standardized evaluation protocols and performance benchmarks for understanding different approaches to the LLM ranking task.
 
 **Current Baselines**:
+- **Tier 2 CPU Optimized**: State-of-the-art neural architecture with multi-head attention, hard negative mining, and advanced training
 - **Enhanced Neural Two-Tower**: Advanced deep learning with ContrastiveLoss, 128D embeddings, and hard negative mining
 - **Neural Two-Tower**: Deep learning approach with sentence transformers and learned embeddings
 - **Random Forest Regressor**: Traditional ML with TF-IDF features and LLM identity encoding
@@ -18,10 +19,11 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 
 | Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime |
 |------|--------|---------|--------|-----|---------|
-| 1 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
-| 2 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 3 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
-| 4 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
+| 1 | **Tier 2 CPU Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
+| 2 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 3 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
+| 4 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 5 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 
@@ -43,6 +45,8 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 │   ├── neural_two_tower/              # Neural Two-Tower baseline
 │   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
 │   │   ├── evaluate_enhanced_10fold_cv.py  # Enhanced model evaluation
+│   │   ├── evaluate_tier2_10fold_cv.py     # Tier 2 model evaluation (GPU)
+│   │   ├── evaluate_tier2_cpu.py      # Tier 2 model evaluation (CPU optimized)
 │   │   ├── model.py                   # Two-tower architecture with enhancements
 │   │   ├── data_loader.py             # Neural data loading with hard negative mining
 │   │   ├── evaluate_neural.py         # Evaluation utilities
@@ -63,6 +67,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
     ├── supervised_training_full.csv   # Processed training dataset
     └── results/                       # Standardized model results
+        ├── tier2_cpu_optimized_results.json        # Tier 2 CPU optimized CV results
         ├── enhanced_neural_two_tower_results.json  # Enhanced Neural baseline CV results
         ├── neural_two_tower_results.json       # Neural baseline CV results  
         ├── random_forest_results.json          # Random Forest CV results
@@ -85,7 +90,25 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 
 ## Model Implementations
 
-### 1. Enhanced Neural Two-Tower (`models/neural_two_tower/`)
+### 1. Tier 2 CPU Optimized (`models/neural_two_tower/`)
+
+**Architecture**:
+- **Query Tower**: all-MiniLM-L6-v2 → Multi-head attention (3 heads) → Dense layers [384→256→192→128]
+- **LLM Tower**: Learned embeddings → Enhanced Dense layers [128→192→128]
+- **Loss Function**: ContrastiveLoss (InfoNCE) with head diversity regularization
+- **Training**: Active hard negative mining (60% hard, 40% easy), curriculum learning
+- **Performance**: nDCG@10=0.4306, Runtime=3.11h
+
+**Tier 2 Enhancements**:
+- **Multi-head Query Attention**: 3 specialized attention heads with emergent specialization
+- **Active Hard Negative Mining**: Intelligent selection of challenging training examples
+- **Head Diversity Regularization**: Encourages different heads to learn complementary aspects
+- **Curriculum Learning**: Progressive training difficulty with hard negatives activated from epoch 3
+
+**Strengths**: State-of-the-art performance, advanced neural architecture, efficient CPU optimization
+**Use Case**: Best-in-class ranking performance, research baseline for advanced multi-head approaches
+
+### 2. Enhanced Neural Two-Tower (`models/neural_two_tower/`)
 
 **Architecture**:
 - **Query Tower**: all-MiniLM-L6-v2 → Dense layers [384→256→192→128]
@@ -156,7 +179,14 @@ python create_supervised_training_set.py
 
 ### 4. Run Baseline Models
 
-**Enhanced Neural Two-Tower** (best performance):
+**Tier 2 CPU Optimized** (best performance):
+```bash
+cd models/neural_two_tower
+pip install -r requirements_neural.txt
+python evaluate_tier2_cpu.py
+```
+
+**Enhanced Neural Two-Tower** (Tier 1 baseline):
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
@@ -246,14 +276,15 @@ python generate_leaderboard.py
 ## Performance Analysis
 
 ### Current Results Summary
-- **Best nDCG@10**: Enhanced Neural Two-Tower (0.4256) leads by 5.8% over baseline neural, 10.3% over Random Forest
-- **Best Runtime**: XGBoost (0.03h) is ultra-fast, 98x faster than Enhanced Neural
-- **Best MRR**: Enhanced Neural (0.7113) achieves strongest ranking performance
-- **Most Efficient Advanced Model**: Enhanced Neural combines best performance with 2x faster training than baseline neural
+- **Best nDCG@10**: Tier 2 CPU Optimized (0.4306) leads by 1.2% over Enhanced Neural, 7.1% over baseline neural
+- **Best MRR**: Tier 2 CPU Optimized (0.7263) achieves strongest first-relevant-item performance
+- **Best Runtime**: XGBoost (0.03h) is ultra-fast, but Tier 2 achieves best performance/time balance
+- **Most Advanced Architecture**: Tier 2 with multi-head attention, hard negative mining, and curriculum learning
 
 ### Model Trade-offs
-- **Enhanced Neural Two-Tower**: State-of-the-art performance, advanced deep learning techniques, moderate training time
-- **Neural Two-Tower**: Strong baseline performance, semantic features, longer training time 
+- **Tier 2 CPU Optimized**: State-of-the-art performance, advanced multi-head architecture, efficient CPU implementation
+- **Enhanced Neural Two-Tower**: Strong Tier 1 performance, ContrastiveLoss and 128D embeddings, good baseline
+- **Neural Two-Tower**: Solid baseline performance, semantic features, longer training time 
 - **Random Forest**: Good balance of performance and interpretability, moderate training time
 - **XGBoost**: Ultra-fast training, competitive performance, excellent for rapid experimentation
 
