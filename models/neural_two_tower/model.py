@@ -77,7 +77,7 @@ class TwoTowerModel(nn.Module):
     """Two-Tower architecture for query-LLM ranking"""
     
     def __init__(self, num_llms, query_embedding_model='all-MiniLM-L6-v2', 
-                 embedding_dim=64, dropout=0.2):
+                 embedding_dim=128, dropout=0.2):
         super(TwoTowerModel, self).__init__()
         
         # Pre-trained sentence transformer for query embeddings
@@ -86,10 +86,10 @@ class TwoTowerModel(nn.Module):
         # Get embedding dimension from sentence transformer
         query_input_dim = self.sentence_transformer.get_sentence_embedding_dimension()
         
-        # Query and LLM towers
+        # Query and LLM towers with enhanced dimensions
         self.query_tower = QueryTower(
             input_dim=query_input_dim,
-            hidden_dims=[256, 128],
+            hidden_dims=[256, 192, 128],  # Added layer for smoother transition
             output_dim=embedding_dim,
             dropout=dropout
         )
@@ -97,7 +97,7 @@ class TwoTowerModel(nn.Module):
         self.llm_tower = LLMTower(
             num_llms=num_llms,
             embedding_dim=embedding_dim,
-            hidden_dims=[128],
+            hidden_dims=[192, 128],  # Enhanced hidden layers
             output_dim=embedding_dim,
             dropout=dropout
         )
@@ -172,6 +172,43 @@ class RankingLoss(nn.Module):
         # Margin loss: max(0, margin - (pos_score - neg_score))
         loss = torch.clamp(self.margin - (positive_scores - negative_scores), min=0.0)
         return loss.mean()
+
+
+class ContrastiveLoss(nn.Module):
+    """InfoNCE-style contrastive loss for better representation learning"""
+    
+    def __init__(self, temperature=0.1):
+        super(ContrastiveLoss, self).__init__()
+        self.temperature = temperature
+        
+    def forward(self, query_embeddings, positive_embeddings, negative_embeddings):
+        """
+        Args:
+            query_embeddings: Query representations [batch_size, embed_dim]
+            positive_embeddings: Positive LLM representations [batch_size, embed_dim]  
+            negative_embeddings: Negative LLM representations [batch_size, num_negatives, embed_dim]
+        """
+        batch_size = query_embeddings.size(0)
+        
+        # Normalize embeddings for cosine similarity
+        query_norm = F.normalize(query_embeddings, p=2, dim=1)
+        pos_norm = F.normalize(positive_embeddings, p=2, dim=1)
+        neg_norm = F.normalize(negative_embeddings, p=2, dim=2)
+        
+        # Positive similarities [batch_size]
+        pos_sim = torch.sum(query_norm * pos_norm, dim=1) / self.temperature
+        
+        # Negative similarities [batch_size, num_negatives]
+        neg_sim = torch.bmm(query_norm.unsqueeze(1), neg_norm.transpose(1, 2)).squeeze(1) / self.temperature
+        
+        # Combine positive and negative similarities
+        # logits: [batch_size, 1 + num_negatives]
+        logits = torch.cat([pos_sim.unsqueeze(1), neg_sim], dim=1)
+        
+        # Labels: positive is always at index 0
+        labels = torch.zeros(batch_size, dtype=torch.long, device=query_embeddings.device)
+        
+        return F.cross_entropy(logits, labels)
 
 
 class TripletLoss(nn.Module):

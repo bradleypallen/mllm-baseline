@@ -9,17 +9,19 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Multi-Model Approach**: This framework implements and compares multiple baseline approaches, providing standardized evaluation protocols and performance benchmarks for understanding different approaches to the LLM ranking task.
 
 **Current Baselines**:
+- **Enhanced Neural Two-Tower**: Advanced deep learning with ContrastiveLoss, 128D embeddings, and hard negative mining
+- **Neural Two-Tower**: Deep learning approach with sentence transformers and learned embeddings
 - **Random Forest Regressor**: Traditional ML with TF-IDF features and LLM identity encoding
-- **Two-Tower Neural Network**: Deep learning approach with sentence transformers and learned embeddings
 - **XGBoost Regressor**: Gradient boosting with advanced regularization and fast training
 
 ## Current Leaderboard
 
 | Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime |
 |------|--------|---------|--------|-----|---------|
-| 1 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 2 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
-| 3 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
+| 1 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 2 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
+| 3 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 4 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 
@@ -40,8 +42,9 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 │   │   └── README.md                  # Model documentation
 │   ├── neural_two_tower/              # Neural Two-Tower baseline
 │   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
-│   │   ├── model.py                   # Two-tower architecture
-│   │   ├── data_loader.py             # Neural data loading
+│   │   ├── evaluate_enhanced_10fold_cv.py  # Enhanced model evaluation
+│   │   ├── model.py                   # Two-tower architecture with enhancements
+│   │   ├── data_loader.py             # Neural data loading with hard negative mining
 │   │   ├── evaluate_neural.py         # Evaluation utilities
 │   │   ├── requirements_neural.txt    # Additional dependencies
 │   │   ├── performance.md             # Detailed performance analysis
@@ -60,9 +63,10 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
     ├── supervised_training_full.csv   # Processed training dataset
     └── results/                       # Standardized model results
-        ├── random_forest_results.json        # Random Forest CV results
-        ├── neural_two_tower_results.json     # Neural baseline CV results
-        └── xgboost_results.json              # XGBoost CV results
+        ├── enhanced_neural_two_tower_results.json  # Enhanced Neural baseline CV results
+        ├── neural_two_tower_results.json       # Neural baseline CV results  
+        ├── random_forest_results.json          # Random Forest CV results
+        └── xgboost_results.json                # XGBoost CV results
 ```
 
 ## Dataset and Evaluation Protocol
@@ -81,15 +85,23 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 
 ## Model Implementations
 
-### 1. Random Forest Baseline (`models/random_forest/`)
+### 1. Enhanced Neural Two-Tower (`models/neural_two_tower/`)
 
 **Architecture**:
-- **Features**: TF-IDF (1000 features) + LLM ID encoding
-- **Model**: Random Forest Regressor (100 trees, max_depth=15)
-- **Performance**: nDCG@10=0.386, Runtime=1.37h
+- **Query Tower**: all-MiniLM-L6-v2 → Dense layers [384→256→192→128]
+- **LLM Tower**: Learned embeddings → Dense layers [128→192→128]
+- **Loss Function**: ContrastiveLoss (InfoNCE) with temperature=0.1
+- **Training**: Hard negative mining capability, 128D embeddings
+- **Performance**: nDCG@10=0.4256, Runtime=2.95h
 
-**Strengths**: Fast training, interpretable, strong baseline performance
-**Use Case**: Comparison benchmark, rapid prototyping
+**Key Enhancements**:
+- **ContrastiveLoss**: InfoNCE-based loss for better representation learning
+- **128D Embeddings**: Enhanced representational capacity vs 64D baseline
+- **Hard Negative Mining**: Intelligent selection of challenging training examples
+- **Efficient Training**: 2x faster convergence than baseline neural model
+
+**Strengths**: State-of-the-art performance, advanced deep learning techniques, efficient training
+**Use Case**: Best-in-class ranking performance, research baseline for advanced neural approaches
 
 ### 2. Neural Two-Tower Baseline (`models/neural_two_tower/`)
 
@@ -97,12 +109,22 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 - **Query Tower**: all-MiniLM-L6-v2 → Dense layers [384→256→128→64]
 - **LLM Tower**: Learned embeddings → Dense layers [64→128→64]
 - **Similarity**: Cosine similarity with margin-based pairwise loss
-- **Performance**: nDCG@10=0.402, Runtime=6.95h
+- **Performance**: nDCG@10=0.4022, Runtime=6.95h
 
-**Strengths**: Semantic understanding, better ranking quality, learned representations
-**Use Case**: Deep learning foundation, semantic query understanding
+**Strengths**: Semantic understanding, strong baseline performance, learned representations
+**Use Case**: Deep learning foundation, semantic query understanding, comparison baseline
 
-### 3. XGBoost Baseline (`models/xgboost/`)
+### 3. Random Forest Baseline (`models/random_forest/`)
+
+**Architecture**:
+- **Features**: TF-IDF (1000 features) + LLM ID encoding
+- **Model**: Random Forest Regressor (100 trees, max_depth=15)
+- **Performance**: nDCG@10=0.3860, Runtime=1.37h
+
+**Strengths**: Fast training, interpretable, solid baseline performance
+**Use Case**: Traditional ML comparison benchmark, rapid prototyping
+
+### 4. XGBoost Baseline (`models/xgboost/`)
 
 **Architecture**:
 - **Features**: TF-IDF (1000 features) + LLM ID encoding (same as Random Forest)
@@ -134,16 +156,23 @@ python create_supervised_training_set.py
 
 ### 4. Run Baseline Models
 
-**Random Forest**:
-```bash
-cd models/random_forest
-python evaluate_10fold_cv.py
-```
-
-**Neural Two-Tower** (requires additional dependencies):
+**Enhanced Neural Two-Tower** (best performance):
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
+python evaluate_enhanced_10fold_cv.py
+```
+
+**Neural Two-Tower** (baseline neural model):
+```bash
+cd models/neural_two_tower
+pip install -r requirements_neural.txt
+python evaluate_10fold_cv.py
+```
+
+**Random Forest**:
+```bash
+cd models/random_forest
 python evaluate_10fold_cv.py
 ```
 
@@ -217,13 +246,14 @@ python generate_leaderboard.py
 ## Performance Analysis
 
 ### Current Results Summary
-- **Best nDCG@10**: Neural Two-Tower (0.402) leads by 4.2% over Random Forest
-- **Best Runtime**: XGBoost (0.03h) is ultra-fast, 46x faster than Random Forest, 232x faster than Neural
-- **Most Consistent**: Neural Two-Tower shows lowest variance (±0.028)
-- **MRR Performance**: Neural (0.676) and Random Forest (0.670) achieve strong MRR; XGBoost lower (0.621)
+- **Best nDCG@10**: Enhanced Neural Two-Tower (0.4256) leads by 5.8% over baseline neural, 10.3% over Random Forest
+- **Best Runtime**: XGBoost (0.03h) is ultra-fast, 98x faster than Enhanced Neural
+- **Best MRR**: Enhanced Neural (0.7113) achieves strongest ranking performance
+- **Most Efficient Advanced Model**: Enhanced Neural combines best performance with 2x faster training than baseline neural
 
 ### Model Trade-offs
-- **Neural Two-Tower**: Best performance, semantic features, longest training time, GPU beneficial
+- **Enhanced Neural Two-Tower**: State-of-the-art performance, advanced deep learning techniques, moderate training time
+- **Neural Two-Tower**: Strong baseline performance, semantic features, longer training time 
 - **Random Forest**: Good balance of performance and interpretability, moderate training time
 - **XGBoost**: Ultra-fast training, competitive performance, excellent for rapid experimentation
 

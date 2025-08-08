@@ -1,6 +1,6 @@
 # TREC 2025 Million LLMs Track - Model Leaderboard
 
-*Generated on 2025-08-07 16:37:16*
+*Generated on 2025-08-08 01:18:51*
 
 ## Performance Comparison
 
@@ -8,9 +8,10 @@ Ranking models by nDCG@10 performance on 10-fold cross-validation.
 
 | Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime | 
 |------|--------|---------|--------|-----|---------|
-| 1 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 2 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
-| 3 | **Xgboost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
+| 1 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 2 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
+| 3 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 4 | **Xgboost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
 
 
 ## Evaluation Protocol
@@ -21,6 +22,16 @@ Ranking models by nDCG@10 performance on 10-fold cross-validation.
 - **Qrel Encoding**: 0→0.0 (not relevant), 1→1.0 (most relevant), 2→0.7 (second-most relevant)
 
 ## Model Details
+
+### Enhanced Neural Two Tower
+
+- **Architecture**: Dual encoder with sentence transformers + Tier 1 enhancements
+- **Query Tower**: all-MiniLM-L6-v2 → Dense [384→256→192→128]
+- **LLM Tower**: Learned embeddings → Dense [128→192→128] 
+- **Training**: 20 epochs/fold, ContrastiveLoss (InfoNCE), Hard negative mining
+- **Enhancements**: 128D embeddings, InfoNCE loss, Hard negative mining capability
+- **Performance**: nDCG@10=0.4256, MRR=0.7113
+- **Runtime**: 2.95 hours
 
 ### Neural Two Tower
 
@@ -53,6 +64,7 @@ To add a new model to the leaderboard:
 
 ## Results Files
 
+- `data/results/enhanced_neural_two_tower_results.json` - Enhanced Neural Two Tower detailed results
 - `data/results/neural_two_tower_results.json` - Neural Two Tower detailed results
 - `data/results/random_forest_results.json` - Random Forest detailed results
 - `data/results/xgboost_results.json` - Xgboost detailed results

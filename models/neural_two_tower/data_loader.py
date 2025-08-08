@@ -9,15 +9,108 @@ for the neural ranking model.
 import pandas as pd
 import numpy as np
 import torch
+import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 import random
 
 
+class HardNegativeMiner:
+    """Hard negative mining for improved training efficiency"""
+    
+    def __init__(self, model=None, hard_ratio=0.5, temperature=0.1):
+        """
+        Args:
+            model: Current model for scoring negatives
+            hard_ratio: Fraction of negatives to select as "hard" (high-scoring)
+            temperature: Temperature for sampling (lower = more deterministic)
+        """
+        self.model = model
+        self.hard_ratio = hard_ratio
+        self.temperature = temperature
+        
+    def mine_hard_negatives(self, query_text, negative_candidates, num_negatives):
+        """
+        Select hard negative examples based on current model predictions
+        
+        Args:
+            query_text: Query text string
+            negative_candidates: DataFrame of negative examples
+            num_negatives: Number of negatives to select
+            
+        Returns:
+            Selected negative examples (DataFrame)
+        """
+        if self.model is None or len(negative_candidates) <= num_negatives:
+            # Fallback to random sampling
+            return negative_candidates.sample(n=min(num_negatives, len(negative_candidates)), replace=True)
+        
+        try:
+            # Get model predictions for all negative candidates
+            self.model.eval()
+            with torch.no_grad():
+                device = next(self.model.parameters()).device
+                
+                # Prepare batch data
+                query_texts = [query_text] * len(negative_candidates)
+                llm_ids = torch.tensor(negative_candidates['llm_encoded'].values, 
+                                     dtype=torch.long, device=device)
+                
+                # Get similarity scores
+                scores = self.model.forward(query_texts, llm_ids).cpu().numpy()
+            
+            # Split into hard and easy negatives
+            num_hard = int(num_negatives * self.hard_ratio)
+            num_easy = num_negatives - num_hard
+            
+            # Select hard negatives (highest scoring)
+            if num_hard > 0:
+                top_indices = np.argpartition(scores, -min(num_hard, len(scores)))[-min(num_hard, len(scores)):]
+                hard_negatives = negative_candidates.iloc[top_indices]
+            else:
+                hard_negatives = pd.DataFrame()
+            
+            # Select easy negatives (random from remaining)
+            if num_easy > 0:
+                remaining_indices = np.setdiff1d(np.arange(len(negative_candidates)), top_indices if num_hard > 0 else [])
+                if len(remaining_indices) > 0:
+                    easy_indices = np.random.choice(remaining_indices, size=min(num_easy, len(remaining_indices)), replace=True)
+                    easy_negatives = negative_candidates.iloc[easy_indices]
+                else:
+                    easy_negatives = pd.DataFrame()
+            else:
+                easy_negatives = pd.DataFrame()
+            
+            # Combine hard and easy negatives
+            if len(hard_negatives) > 0 and len(easy_negatives) > 0:
+                selected = pd.concat([hard_negatives, easy_negatives])
+            elif len(hard_negatives) > 0:
+                selected = hard_negatives
+            elif len(easy_negatives) > 0:
+                selected = easy_negatives
+            else:
+                selected = negative_candidates.sample(n=min(num_negatives, len(negative_candidates)), replace=True)
+                
+            # Ensure we have exactly num_negatives samples
+            if len(selected) < num_negatives:
+                additional_needed = num_negatives - len(selected)
+                additional = negative_candidates.sample(n=additional_needed, replace=True)
+                selected = pd.concat([selected, additional])
+            elif len(selected) > num_negatives:
+                selected = selected.sample(n=num_negatives, replace=False)
+                
+            return selected
+            
+        except Exception as e:
+            # Fallback to random sampling on any error
+            print(f"Hard negative mining failed, using random sampling: {e}")
+            return negative_candidates.sample(n=min(num_negatives, len(negative_candidates)), replace=True)
+
+
 class LLMRankingDataset(Dataset):
     """Dataset for LLM ranking with positive/negative sampling"""
     
-    def __init__(self, df, llm_encoder=None, negative_samples_per_positive=4, fit_encoder=True):
+    def __init__(self, df, llm_encoder=None, negative_samples_per_positive=4, fit_encoder=True, hard_negative_miner=None):
         """
         Args:
             df: DataFrame with columns [query_id, query_text, llm_id, qrel]
@@ -27,6 +120,7 @@ class LLMRankingDataset(Dataset):
         """
         self.df = df.copy()
         self.negative_samples_per_positive = negative_samples_per_positive
+        self.hard_negative_miner = hard_negative_miner
         
         # Encode LLM IDs
         if llm_encoder is None:
@@ -81,6 +175,32 @@ class LLMRankingDataset(Dataset):
         # Sample negative examples for this query
         neg_examples = self.negative_by_query.get_group(query_id)
         
+        # Use hard negative mining if available, otherwise random sampling
+        if self.hard_negative_miner is not None:
+            try:
+                neg_examples_sampled = self.hard_negative_miner.mine_hard_negatives(
+                    pos_example['query_text'], 
+                    neg_examples, 
+                    self.negative_samples_per_positive
+                )
+            except:
+                # Fallback to random sampling on any error
+                neg_examples_sampled = self._random_sample_negatives(neg_examples)
+        else:
+            neg_examples_sampled = self._random_sample_negatives(neg_examples)
+        
+        # Return batch data
+        return {
+            'query_text': pos_example['query_text'],
+            'query_id': pos_example['query_id'],
+            'positive_llm': pos_example['llm_encoded'],
+            'positive_relevance': pos_example['relevance'],
+            'negative_llms': neg_examples_sampled['llm_encoded'].values,
+            'negative_relevances': neg_examples_sampled['relevance'].values
+        }
+    
+    def _random_sample_negatives(self, neg_examples):
+        """Helper method for random negative sampling"""
         # Sample negatives (with replacement if needed)
         n_negatives = min(self.negative_samples_per_positive, len(neg_examples))
         if n_negatives < self.negative_samples_per_positive:
@@ -94,17 +214,7 @@ class LLMRankingDataset(Dataset):
                                          size=self.negative_samples_per_positive, 
                                          replace=False)
         
-        neg_examples_sampled = neg_examples.iloc[neg_indices]
-        
-        # Return batch data
-        return {
-            'query_text': pos_example['query_text'],
-            'query_id': pos_example['query_id'],
-            'positive_llm': pos_example['llm_encoded'],
-            'positive_relevance': pos_example['relevance'],
-            'negative_llms': neg_examples_sampled['llm_encoded'].values,
-            'negative_relevances': neg_examples_sampled['relevance'].values
-        }
+        return neg_examples.iloc[neg_indices]
 
 
 def collate_fn(batch):

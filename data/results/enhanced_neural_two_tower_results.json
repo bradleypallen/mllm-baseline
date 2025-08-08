@@ -1,0 +1,146 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-07T23:36:48.430320",
+    "pipeline": "Enhanced Two-Tower Neural Network (Contrastive Loss + 128D + Hard Negatives)",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "epochs_per_fold": 20,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "device": "cpu",
+    "enhancements": [
+      "ContrastiveLoss",
+      "128D_embeddings",
+      "Hard_negative_mining"
+    ],
+    "total_runtime_seconds": 10619.7,
+    "total_runtime_minutes": 177.0,
+    "total_runtime_hours": 2.95
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.4256,
+      "std": 0.0499,
+      "min": 0.3424,
+      "max": 0.5182,
+      "confidence_interval_95": [
+        0.3278,
+        0.5235
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.4287,
+      "std": 0.0563,
+      "min": 0.335,
+      "max": 0.5176,
+      "confidence_interval_95": [
+        0.3183,
+        0.5391
+      ]
+    },
+    "mrr": {
+      "mean": 0.7113,
+      "std": 0.0738,
+      "min": 0.5933,
+      "max": 0.8255,
+      "confidence_interval_95": [
+        0.5668,
+        0.8559
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.43634567130900176,
+      "ndcg_5": 0.39383568549563774,
+      "mrr": 0.704047619047619,
+      "train_time": 985.7004890441895,
+      "n_queries": 35,
+      "best_epoch": 12
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.3977472220639395,
+      "ndcg_5": 0.38652832593390174,
+      "mrr": 0.6409841269841269,
+      "train_time": 1008.8854279518127,
+      "n_queries": 35,
+      "best_epoch": 18
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.37571886454422215,
+      "ndcg_5": 0.4046697190951359,
+      "mrr": 0.6847358251858155,
+      "train_time": 1032.6312010288239,
+      "n_queries": 34,
+      "best_epoch": 4
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.34235875984619135,
+      "ndcg_5": 0.33502813014114047,
+      "mrr": 0.5932865675005635,
+      "train_time": 1134.4447429180145,
+      "n_queries": 34,
+      "best_epoch": 17
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.4789987570103707,
+      "ndcg_5": 0.5052167294889656,
+      "mrr": 0.8255240027045301,
+      "train_time": 1070.68235206604,
+      "n_queries": 34,
+      "best_epoch": 8
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.40441785141213765,
+      "ndcg_5": 0.41409523504128576,
+      "mrr": 0.6590686274509804,
+      "train_time": 1064.0154612064362,
+      "n_queries": 34,
+      "best_epoch": 16
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.4631000996715815,
+      "ndcg_5": 0.48909392877051006,
+      "mrr": 0.7673696929752294,
+      "train_time": 1092.9969079494476,
+      "n_queries": 34,
+      "best_epoch": 6
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.44465585760438703,
+      "ndcg_5": 0.44898668947906334,
+      "mrr": 0.7628959276018099,
+      "train_time": 1066.8534381389618,
+      "n_queries": 34,
+      "best_epoch": 7
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5182456609140886,
+      "ndcg_5": 0.5176360957461761,
+      "mrr": 0.8145424836601307,
+      "train_time": 1147.652191877365,
+      "n_queries": 34,
+      "best_epoch": 18
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.3948575390344269,
+      "ndcg_5": 0.39210052371738047,
+      "mrr": 0.6609287173849584,
+      "train_time": 1015.620386838913,
+      "n_queries": 34,
+      "best_epoch": 18
+    }
+  ]
+}
