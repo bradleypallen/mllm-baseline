@@ -1,0 +1,154 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-09T12:09:32.320921",
+    "pipeline": "Tier 3 Cross-Encoder (Joint Query-LLM Encoding)",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "epochs_per_fold": 15,
+    "batch_size": 48,
+    "learning_rate": 2e-05,
+    "device": "mps",
+    "tier_3_features": [
+      "Cross_encoder_transformer",
+      "Joint_query_LLM_encoding",
+      "DistilBERT_backbone",
+      "Direct_relevance_prediction",
+      "Fine_tuned_attention"
+    ],
+    "model_config": {
+      "transformer_model": "distilbert-base-uncased",
+      "max_sequence_length": 512,
+      "dropout": 0.1,
+      "loss_function": "BCEWithLogitsLoss"
+    },
+    "total_runtime_seconds": 78907.6,
+    "total_runtime_minutes": 1315.1,
+    "total_runtime_hours": 21.92
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.4259,
+      "std": 0.0494,
+      "min": 0.3366,
+      "max": 0.5128,
+      "confidence_interval_95": [
+        0.3292,
+        0.5227
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.4378,
+      "std": 0.0505,
+      "min": 0.3492,
+      "max": 0.5233,
+      "confidence_interval_95": [
+        0.3388,
+        0.5368
+      ]
+    },
+    "mrr": {
+      "mean": 0.7141,
+      "std": 0.0759,
+      "min": 0.5975,
+      "max": 0.8679,
+      "confidence_interval_95": [
+        0.5654,
+        0.8628
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.43267908117162973,
+      "ndcg_5": 0.4068568507732083,
+      "mrr": 0.6941656662665066,
+      "train_time": 7835.536365032196,
+      "n_queries": 35,
+      "best_epoch": 10
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.4182877547254336,
+      "ndcg_5": 0.4319562755369832,
+      "mrr": 0.7154984557925734,
+      "train_time": 8907.405527830124,
+      "n_queries": 35,
+      "best_epoch": 4
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.3633938189007596,
+      "ndcg_5": 0.3863308272156648,
+      "mrr": 0.6764949458044087,
+      "train_time": 8031.90749001503,
+      "n_queries": 34,
+      "best_epoch": 13
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.33658165700688897,
+      "ndcg_5": 0.3492261429459289,
+      "mrr": 0.5975060743383045,
+      "train_time": 7717.869777202606,
+      "n_queries": 34,
+      "best_epoch": 14
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.4670758109822303,
+      "ndcg_5": 0.4723912107814603,
+      "mrr": 0.7950980392156862,
+      "train_time": 7959.147828102112,
+      "n_queries": 34,
+      "best_epoch": 11
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.4175341385352727,
+      "ndcg_5": 0.42748801416741344,
+      "mrr": 0.646078431372549,
+      "train_time": 7925.440459728241,
+      "n_queries": 34,
+      "best_epoch": 12
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.47090732695522314,
+      "ndcg_5": 0.5003670262058053,
+      "mrr": 0.7720336852689794,
+      "train_time": 7590.2911059856415,
+      "n_queries": 34,
+      "best_epoch": 7
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.4419969311330456,
+      "ndcg_5": 0.4675632632611353,
+      "mrr": 0.7242647058823529,
+      "train_time": 7622.31129193306,
+      "n_queries": 34,
+      "best_epoch": 7
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5128434994709496,
+      "ndcg_5": 0.5232785291848143,
+      "mrr": 0.8679065743944636,
+      "train_time": 7572.293987989426,
+      "n_queries": 34,
+      "best_epoch": 9
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.39808731574077055,
+      "ndcg_5": 0.41276496692707887,
+      "mrr": 0.6520727801610154,
+      "train_time": 7745.057041883469,
+      "n_queries": 34,
+      "best_epoch": 8
+    }
+  ]
+}

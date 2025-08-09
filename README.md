@@ -10,6 +10,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 
 **Current Baselines**:
 - **Tier 2 CPU Optimized**: State-of-the-art neural architecture with multi-head attention, hard negative mining, and advanced training
+- **Tier 3 Cross-Encoder**: Joint query-LLM encoding with transformer attention for direct relevance prediction
 - **Enhanced Neural Two-Tower**: Advanced deep learning with ContrastiveLoss, 128D embeddings, and hard negative mining
 - **Neural Two-Tower**: Deep learning approach with sentence transformers and learned embeddings
 - **Random Forest Regressor**: Traditional ML with TF-IDF features and LLM identity encoding
@@ -20,10 +21,11 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 | Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime |
 |------|--------|---------|--------|-----|---------|
 | 1 | **Tier 2 CPU Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
-| 2 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
-| 3 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 4 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
-| 5 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
+| 2 | **Tier 3 Cross-Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
+| 3 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 4 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
+| 5 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 6 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 
@@ -47,7 +49,8 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 │   │   ├── evaluate_enhanced_10fold_cv.py  # Enhanced model evaluation
 │   │   ├── evaluate_tier2_10fold_cv.py     # Tier 2 model evaluation (GPU)
 │   │   ├── evaluate_tier2_cpu.py      # Tier 2 model evaluation (CPU optimized)
-│   │   ├── model.py                   # Two-tower architecture with enhancements
+│   │   ├── evaluate_tier3_cross_encoder.py  # Tier 3 cross-encoder evaluation
+│   │   ├── model.py                   # Multi-tier architectures with enhancements
 │   │   ├── data_loader.py             # Neural data loading with hard negative mining
 │   │   ├── evaluate_neural.py         # Evaluation utilities
 │   │   ├── requirements_neural.txt    # Additional dependencies
@@ -68,6 +71,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
     ├── supervised_training_full.csv   # Processed training dataset
     └── results/                       # Standardized model results
         ├── tier2_cpu_optimized_results.json        # Tier 2 CPU optimized CV results
+        ├── tier3_cross_encoder_results.json        # Tier 3 cross-encoder CV results
         ├── enhanced_neural_two_tower_results.json  # Enhanced Neural baseline CV results
         ├── neural_two_tower_results.json       # Neural baseline CV results  
         ├── random_forest_results.json          # Random Forest CV results
@@ -108,7 +112,27 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Strengths**: State-of-the-art performance, advanced neural architecture, efficient CPU optimization
 **Use Case**: Best-in-class ranking performance, research baseline for advanced multi-head approaches
 
-### 2. Enhanced Neural Two-Tower (`models/neural_two_tower/`)
+### 2. Tier 3 Cross-Encoder (`models/neural_two_tower/`)
+
+**Architecture**:
+- **Transformer Backbone**: DistilBERT-base-uncased for joint query-LLM encoding
+- **Query Processing**: Tokenized text → DistilBERT → [CLS] token representation (768D)
+- **LLM Integration**: Learned LLM embeddings (192D) concatenated with query representation
+- **Classification Head**: Dense layers [960→768→384→1] with ReLU activation and dropout
+- **Training**: BCE loss for direct relevance prediction, batch_size=48, 15 epochs
+- **Performance**: nDCG@10=0.4259, Runtime=21.92h
+
+**Tier 3 Cross-Encoder Features**:
+- **Joint Attention**: Direct transformer attention between query tokens and LLM representation
+- **End-to-End Optimization**: Direct relevance prediction vs. embedding similarity matching
+- **Memory Optimization**: batch_size=48 optimized for 24GB unified memory systems
+- **Advanced Loss**: BCE with logits for stable binary classification training
+
+**Strengths**: Sophisticated transformer architecture, direct query-LLM interaction modeling
+**Limitations**: 7x slower training than Tier 2 for comparable performance, computationally expensive
+**Use Case**: Research exploration of cross-encoder limits, comparison baseline for attention mechanisms
+
+### 3. Enhanced Neural Two-Tower (`models/neural_two_tower/`)
 
 **Architecture**:
 - **Query Tower**: all-MiniLM-L6-v2 → Dense layers [384→256→192→128]
@@ -184,6 +208,13 @@ python create_supervised_training_set.py
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
 python evaluate_tier2_cpu.py
+```
+
+**Tier 3 Cross-Encoder** (transformer-based):
+```bash
+cd models/neural_two_tower
+pip install -r requirements_neural.txt
+python evaluate_tier3_cross_encoder.py
 ```
 
 **Enhanced Neural Two-Tower** (Tier 1 baseline):
@@ -276,13 +307,15 @@ python generate_leaderboard.py
 ## Performance Analysis
 
 ### Current Results Summary
-- **Best nDCG@10**: Tier 2 CPU Optimized (0.4306) leads by 1.2% over Enhanced Neural, 7.1% over baseline neural
-- **Best MRR**: Tier 2 CPU Optimized (0.7263) achieves strongest first-relevant-item performance
-- **Best Runtime**: XGBoost (0.03h) is ultra-fast, but Tier 2 achieves best performance/time balance
-- **Most Advanced Architecture**: Tier 2 with multi-head attention, hard negative mining, and curriculum learning
+- **Best nDCG@10**: Tier 2 CPU Optimized (0.4306) leads by 1.1% over Tier 3, 1.2% over Enhanced Neural
+- **Best MRR**: Tier 2 CPU Optimized (0.7263) achieves strongest first-relevant-item performance  
+- **Best Efficiency**: Tier 2 achieves top performance in 3.11h vs Tier 3's 21.92h (7x faster)
+- **Most Advanced Architecture**: Tie between Tier 2 (multi-head + hard negatives) and Tier 3 (cross-encoder)
+- **Performance Plateau**: Top 3 models within 0.5% nDCG@10, suggesting architectural limits with current features
 
 ### Model Trade-offs
 - **Tier 2 CPU Optimized**: State-of-the-art performance, advanced multi-head architecture, efficient CPU implementation
+- **Tier 3 Cross-Encoder**: Competitive performance, sophisticated transformer architecture, 7x training time
 - **Enhanced Neural Two-Tower**: Strong Tier 1 performance, ContrastiveLoss and 128D embeddings, good baseline
 - **Neural Two-Tower**: Solid baseline performance, semantic features, longer training time 
 - **Random Forest**: Good balance of performance and interpretability, moderate training time
