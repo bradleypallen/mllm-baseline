@@ -56,10 +56,15 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 │   │   ├── requirements_neural.txt    # Additional dependencies
 │   │   ├── performance.md             # Detailed performance analysis
 │   │   └── README.md                  # Model documentation
-│   └── xgboost/                       # XGBoost baseline
-│       ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
-│       ├── requirements_xgboost.txt   # XGBoost dependencies
-│       └── README.md                  # Model documentation
+│   ├── xgboost/                       # XGBoost baseline
+│   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
+│   │   ├── requirements_xgboost.txt   # XGBoost dependencies
+│   │   └── README.md                  # Model documentation
+│   └── epistemic_profiling/           # Epistemic profiling experiments
+│       ├── bilateral_truth_clustering.py  # LLM clustering based on epistemic behavior
+│       ├── xgboost_with_expertise.py      # XGBoost with expertise features
+│       ├── two_tower_with_expertise.py    # Neural model with profile features
+│       └── RESULTS_SUMMARY.md         # Comprehensive results analysis
 ├── shared/                            # Shared utilities
 │   └── utils/                         # Common evaluation functions
 │       ├── evaluation.py              # Standardized metrics
@@ -350,6 +355,16 @@ pip install -r requirements_xgboost.txt
 - **RAM**: 8GB+ for full dataset processing
 - **CPU**: Multi-core recommended for parallel training
 - **GPU**: Optional but beneficial for neural models
+
+## Recent Experiments
+
+### Epistemic Profiling (`models/epistemic_profiling/`)
+We explored integrating epistemic profiles (bilateral truth evaluation) and expertise matching into LLM ranking:
+- **Bilateral Truth Profiles**: 4D epistemic profiles measuring LLM behavior patterns (confident_correct, overconfident_wrong, uncertain, inconsistent)
+- **LLM Clustering**: Grouped 1,131 LLMs into 5 clusters based on epistemic reliability
+- **Expertise Profiles**: Domain-specific expertise for 117 elite LLMs using Q&A clustering
+- **Results**: XGBoost with expertise achieved nDCG@10=0.3994 (+1.8% over baseline XGBoost)
+- See [models/epistemic_profiling/RESULTS_SUMMARY.md](models/epistemic_profiling/RESULTS_SUMMARY.md) for detailed analysis
 
 ## Future Directions
 

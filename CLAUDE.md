@@ -324,3 +324,5 @@ neural_results = load_results('neural_two_tower')
 - **Error Analysis**: Include analysis of failure cases when relevant
 
 This multi-model framework serves as a foundation for systematic comparison of different approaches to automated LLM ranking and selection for query answering tasks.
+- Make evaluation scripts be completely consistent in their output during 10-fold CV runs, including per-fold validation performance metrics.
+- Use the bilateral-truth package for LLM judges

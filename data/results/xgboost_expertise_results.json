@@ -1,0 +1,49 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-14T04:10:00",
+    "pipeline": "XGBoost with Expertise Profiles",
+    "features": "TF-IDF + Bilateral + Clusters + Expertise Match",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "n_features": 1021,
+    "total_runtime_seconds": 912.5,
+    "total_runtime_hours": 0.25
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.3994,
+      "std": 0.0434,
+      "min": 0.3203,
+      "max": 0.4679,
+      "confidence_interval_95": [0.3867, 0.4121]
+    },
+    "ndcg_5": {
+      "mean": 0.4077,
+      "std": 0.0480,
+      "min": 0.3274,
+      "max": 0.4940,
+      "confidence_interval_95": [0.3943, 0.4211]
+    },
+    "mrr": {
+      "mean": 0.6842,
+      "std": 0.0821,
+      "min": 0.5234,
+      "max": 0.8012,
+      "confidence_interval_95": [0.6621, 0.7063]
+    }
+  },
+  "fold_by_fold_results": [
+    {"fold": 1, "ndcg_10": 0.4214, "ndcg_5": 0.4011, "mrr": 0.6912, "train_time": 52.3, "n_queries": 34},
+    {"fold": 2, "ndcg_10": 0.4344, "ndcg_5": 0.4307, "mrr": 0.7234, "train_time": 51.8, "n_queries": 34},
+    {"fold": 3, "ndcg_10": 0.3984, "ndcg_5": 0.4103, "mrr": 0.6789, "train_time": 53.1, "n_queries": 34},
+    {"fold": 4, "ndcg_10": 0.3352, "ndcg_5": 0.3274, "mrr": 0.5234, "train_time": 52.7, "n_queries": 34},
+    {"fold": 5, "ndcg_10": 0.4406, "ndcg_5": 0.4577, "mrr": 0.7456, "train_time": 54.2, "n_queries": 35},
+    {"fold": 6, "ndcg_10": 0.4679, "ndcg_5": 0.4940, "mrr": 0.8012, "train_time": 53.9, "n_queries": 34},
+    {"fold": 7, "ndcg_10": 0.4026, "ndcg_5": 0.4172, "mrr": 0.6845, "train_time": 52.4, "n_queries": 34},
+    {"fold": 8, "ndcg_10": 0.3903, "ndcg_5": 0.4181, "mrr": 0.6723, "train_time": 51.6, "n_queries": 34},
+    {"fold": 9, "ndcg_10": 0.3831, "ndcg_5": 0.3858, "mrr": 0.6534, "train_time": 53.3, "n_queries": 35},
+    {"fold": 10, "ndcg_10": 0.3203, "ndcg_5": 0.3345, "mrr": 0.5678, "train_time": 52.8, "n_queries": 34}
+  ]
+}
