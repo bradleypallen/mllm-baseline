@@ -41,15 +41,22 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 ├── test_models.py                     # Quick testing suite (< 3 seconds)
 ├── leaderboard.md                     # Model comparison leaderboard
 ├── generate_leaderboard.py            # Leaderboard generation script
+├── docs/                              # Additional documentation
+│   └── neural-architecture-evolution.md  # Neural architecture development notes
 ├── models/                            # Model implementations
 │   ├── random_forest/                 # Random Forest baseline
 │   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
 │   │   └── README.md                  # Model documentation
 │   ├── neural_two_tower/              # Neural Two-Tower baseline
-│   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
+│   │   ├── evaluate_10fold_cv.py      # Original neural two-tower evaluation
 │   │   ├── evaluate_enhanced_10fold_cv.py  # Enhanced model evaluation
 │   │   ├── evaluate_tier2_10fold_cv.py     # Tier 2 model evaluation (GPU)
 │   │   ├── evaluate_tier2_cpu.py      # Tier 2 model evaluation (CPU optimized)
+│   │   ├── evaluate_tier2_config_a.py # Hyperparameter Config A (6 heads)
+│   │   ├── evaluate_tier2_config_b.py # Hyperparameter Config B (8 heads)
+│   │   ├── evaluate_tier2_tuned.py    # Tuned hyperparameter variant
+│   │   ├── tune_tier2_hyperparams.py  # Hyperparameter search script
+│   │   ├── evaluate_tier2_with_profiles.py  # Epistemic profile integration
 │   │   ├── evaluate_tier3_cross_encoder.py  # Tier 3 cross-encoder evaluation
 │   │   ├── model.py                   # Multi-tier architectures with enhancements
 │   │   ├── data_loader.py             # Neural data loading with hard negative mining
@@ -57,15 +64,40 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 │   │   ├── requirements_neural.txt    # Additional dependencies
 │   │   ├── performance.md             # Detailed performance analysis
 │   │   └── README.md                  # Model documentation
-│   ├── xgboost/                       # XGBoost baseline
-│   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
+│   ├── xgboost/                       # XGBoost baseline with variants
+│   │   ├── evaluate_10fold_cv.py      # Original XGBoost evaluation
+│   │   ├── evaluate_xgboost_hybrid.py # Hybrid feature engineering
+│   │   ├── evaluate_xgboost_ensemble.py   # Ensemble methods
+│   │   ├── evaluate_xgboost_discovery.py  # Discovery data integration
+│   │   ├── evaluate_xgboost_epistemic.py  # Epistemic feature integration
+│   │   ├── evaluate_xgboost_expertise.py  # Expertise-based features
+│   │   ├── evaluate_xgboost_interactions.py  # Feature interactions
+│   │   ├── evaluate_xgboost_smart_imputation.py  # Advanced imputation
+│   │   ├── evaluate_xgboost_deeper.py     # Deeper tree configurations
+│   │   ├── evaluate_xgboost_twostage.py   # Two-stage training
+│   │   ├── evaluate_xgboost_weighted_ensemble.py  # Weighted ensemble
 │   │   ├── requirements_xgboost.txt   # XGBoost dependencies
 │   │   └── README.md                  # Model documentation
 │   └── epistemic_profiling/           # Epistemic profiling experiments
-│       ├── bilateral_truth_clustering.py  # LLM clustering based on epistemic behavior
-│       ├── xgboost_with_expertise.py      # XGBoost with expertise features
-│       ├── two_tower_with_expertise.py    # Neural model with profile features
-│       └── RESULTS_SUMMARY.md         # Comprehensive results analysis
+│       ├── EPISTEMIC_PROFILING_OVERVIEW.md  # Comprehensive overview
+│       ├── RESULTS_SUMMARY.md         # Results analysis and insights
+│       ├── PROFILE_FILES_README.md    # Guide to profile file formats
+│       ├── bilateral_profile_extractor.py  # Bilateral truth profiling
+│       ├── epistemic_profile_extractor.py  # Epistemic behavior analysis
+│       ├── cluster_llm_profiles.py    # LLM clustering algorithms
+│       ├── build_expertise_profiles.py     # Domain expertise extraction
+│       ├── xgboost_with_expertise.py  # XGBoost with expertise features
+│       ├── two_tower_with_expertise.py     # Neural model with profiles
+│       ├── enhanced_two_tower.py      # Enhanced model with epistemic features
+│       ├── tier2_with_discovery.py    # Tier2 with discovery integration
+│       ├── simplified_epistemic_model.py   # Lightweight epistemic model
+│       ├── analyze_complete_profiles.py    # Profile analysis tools
+│       ├── compare_evaluation_methods.py   # Method comparison studies
+│       ├── strategic_300_llms.json    # Strategic LLM subset profiles
+│       ├── complete_1131_llms_profiles.json # Complete LLM profiles
+│       ├── bilateral_epistemic_profiles.json # Bilateral truth profiles
+│       ├── qrel_expertise_profiles.json    # Q&A-based expertise profiles
+│       └── [100+ additional experimental files] # Checkpoints, analyses, results
 ├── shared/                            # Shared utilities
 │   └── utils/                         # Common evaluation functions
 │       ├── evaluation.py              # Standardized metrics
@@ -74,14 +106,26 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
     ├── create_supervised_training_set.py     # Data preprocessing script
     ├── llm_dev_data.tsv               # 342 development queries
     ├── llm_dev_qrels.txt              # 386,802 relevance judgments
+    ├── llm_discovery_data_1.json      # Discovery dataset (14,950 queries)
+    ├── llm_discovery_data_2.json      # Discovery dataset continuation
+    ├── llm_discovery_metadata_1.json  # Discovery metadata
     ├── supervised_training_full.csv   # Processed training dataset
-    └── results/                       # Standardized model results
-        ├── tier2_cpu_optimized_results.json        # Tier 2 CPU optimized CV results
-        ├── tier3_cross_encoder_results.json        # Tier 3 cross-encoder CV results
-        ├── enhanced_neural_two_tower_results.json  # Enhanced Neural baseline CV results
-        ├── neural_two_tower_results.json       # Neural baseline CV results  
-        ├── random_forest_results.json          # Random Forest CV results
-        └── xgboost_results.json                # XGBoost CV results
+    └── results/                       # Standardized model results (25+ files)
+        ├── tier2_cpu_optimized_results.json        # Tier2 CPU optimized
+        ├── tier2_cpu_optimized_config_a_results.json # Config A (6 heads)
+        ├── tier2_cpu_optimized_config_b_results.json # Config B (8 heads)
+        ├── tier2_cpu_optimized_tuned_results.json    # Tuned hyperparameters
+        ├── tier3_cross_encoder_results.json        # Tier3 cross-encoder
+        ├── enhanced_neural_two_tower_results.json  # Enhanced neural baseline
+        ├── neural_two_tower_results.json       # Original neural baseline
+        ├── random_forest_results.json          # Random Forest baseline
+        ├── xgboost_results.json                # Original XGBoost baseline
+        ├── xgboost_hybrid_results.json         # XGBoost hybrid features
+        ├── xgboost_ensemble_results.json       # XGBoost ensemble methods
+        ├── xgboost_epistemic_results.json      # XGBoost epistemic features
+        ├── xgboost_expertise_results.json      # XGBoost expertise features
+        ├── simplified_epistemic_300_results.json   # Simplified epistemic model
+        └── [additional XGBoost variant results] # 15+ XGBoost experimental results
 ```
 
 ## Dataset and Evaluation Protocol
