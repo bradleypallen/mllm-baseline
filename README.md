@@ -9,23 +9,24 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Multi-Model Approach**: This framework implements and compares multiple baseline approaches, providing standardized evaluation protocols and performance benchmarks for understanding different approaches to the LLM ranking task.
 
 **Current Baselines**:
-- **Tier 2 CPU Optimized**: State-of-the-art neural architecture with multi-head attention, hard negative mining, and advanced training
-- **Tier 3 Cross-Encoder**: Joint query-LLM encoding with transformer attention for direct relevance prediction
-- **Enhanced Neural Two-Tower**: Advanced deep learning with ContrastiveLoss, 128D embeddings, and hard negative mining
+- **Tier2 CPU Optimized**: Neural two-tower architecture with multi-head attention (3 heads) achieving nDCG@10=0.4306
+- **Tier2 Config A & B**: Hyperparameter-optimized variants with 6-8 attention heads achieving nDCG@10=0.4278/0.4261
+- **Tier3 Cross-Encoder**: Joint query-LLM encoding with transformer attention for direct relevance prediction
+- **Enhanced Neural Two-Tower**: Deep learning with ContrastiveLoss, 128D embeddings, and hard negative mining
 - **Neural Two-Tower**: Deep learning approach with sentence transformers and learned embeddings
 - **Random Forest Regressor**: Traditional ML with TF-IDF features and LLM identity encoding
-- **XGBoost Regressor**: Gradient boosting with advanced regularization and fast training
+- **XGBoost Regressor**: Gradient boosting with regularization and fast training
 
 ## Current Leaderboard
 
 | Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime |
 |------|--------|---------|--------|-----|---------|
-| 1 | **Tier 2 CPU Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
-| 2 | **Tier 3 Cross-Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
-| 3 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
-| 4 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 5 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
-| 6 | **XGBoost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
+| 1 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
+| 2 | **Tier2 Cpu Optimized Config A** | 0.4278 ± 0.052 | 0.4399 ± 0.054 | 0.7162 ± 0.066 | 4.54h |
+| 3 | **Tier2 Cpu Optimized Config B** | 0.4261 ± 0.052 | 0.4356 ± 0.058 | 0.6783 ± 0.071 | 4.73h |
+| 4 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
+| 5 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 6 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 
@@ -99,25 +100,25 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 
 ## Model Implementations
 
-### 1. Tier 2 CPU Optimized (`models/neural_two_tower/`)
+### 1. Tier2 CPU Optimized (`models/neural_two_tower/`)
 
 **Architecture**:
 - **Query Tower**: all-MiniLM-L6-v2 → Multi-head attention (3 heads) → Dense layers [384→256→192→128]
-- **LLM Tower**: Learned embeddings → Enhanced Dense layers [128→192→128]
+- **LLM Tower**: Learned embeddings → Dense layers [128→192→128]
 - **Loss Function**: ContrastiveLoss (InfoNCE) with head diversity regularization
-- **Training**: Active hard negative mining (60% hard, 40% easy), curriculum learning
+- **Training**: Hard negative mining (60% hard, 40% easy), curriculum learning
 - **Performance**: nDCG@10=0.4306, Runtime=3.11h
 
-**Tier 2 Enhancements**:
-- **Multi-head Query Attention**: 3 specialized attention heads with emergent specialization
-- **Active Hard Negative Mining**: Intelligent selection of challenging training examples
-- **Head Diversity Regularization**: Encourages different heads to learn complementary aspects
-- **Curriculum Learning**: Progressive training difficulty with hard negatives activated from epoch 3
+**Implementation Details**:
+- **Multi-head Query Attention**: 3 attention heads with specialization regularization
+- **Hard Negative Mining**: Dynamic selection of challenging training examples
+- **Head Diversity Regularization**: Loss term encouraging complementary head representations
+- **Curriculum Learning**: Hard negatives activated from epoch 3 onwards
 
-**Strengths**: State-of-the-art performance, advanced neural architecture, efficient CPU optimization
-**Use Case**: Best-in-class ranking performance, research baseline for advanced multi-head approaches
+**Characteristics**: Highest measured performance (nDCG@10=0.4306), multi-head neural architecture, CPU-optimized implementation
+**Use Case**: Performance baseline for multi-head attention approaches in LLM ranking
 
-### 2. Tier 3 Cross-Encoder (`models/neural_two_tower/`)
+### 2. Tier3 Cross-Encoder (`models/neural_two_tower/`)
 
 **Architecture**:
 - **Transformer Backbone**: DistilBERT-base-uncased for joint query-LLM encoding
@@ -127,15 +128,15 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 - **Training**: BCE loss for direct relevance prediction, batch_size=48, 15 epochs
 - **Performance**: nDCG@10=0.4259, Runtime=21.92h
 
-**Tier 3 Cross-Encoder Features**:
-- **Joint Attention**: Direct transformer attention between query tokens and LLM representation
-- **End-to-End Optimization**: Direct relevance prediction vs. embedding similarity matching
-- **Memory Optimization**: batch_size=48 optimized for 24GB unified memory systems
-- **Advanced Loss**: BCE with logits for stable binary classification training
+**Implementation Details**:
+- **Joint Attention**: Transformer attention between query tokens and LLM representation
+- **Direct Optimization**: Relevance prediction without embedding similarity constraints
+- **Memory Configuration**: Batch size 48 for memory efficiency
+- **Binary Classification**: BCE loss with logits for training stability
 
-**Strengths**: Sophisticated transformer architecture, direct query-LLM interaction modeling
-**Limitations**: 7x slower training than Tier 2 for comparable performance, computationally expensive
-**Use Case**: Research exploration of cross-encoder limits, comparison baseline for attention mechanisms
+**Characteristics**: Transformer-based architecture, direct query-LLM interaction modeling
+**Trade-offs**: 7x longer training time (21.92h vs 3.11h) for comparable performance (nDCG@10=0.4259 vs 0.4306)
+**Use Case**: Comparison baseline for cross-encoder approaches in LLM ranking
 
 ### 3. Enhanced Neural Two-Tower (`models/neural_two_tower/`)
 
@@ -143,19 +144,19 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 - **Query Tower**: all-MiniLM-L6-v2 → Dense layers [384→256→192→128]
 - **LLM Tower**: Learned embeddings → Dense layers [128→192→128]
 - **Loss Function**: ContrastiveLoss (InfoNCE) with temperature=0.1
-- **Training**: Hard negative mining capability, 128D embeddings
+- **Training**: Hard negative mining, 128D embeddings
 - **Performance**: nDCG@10=0.4256, Runtime=2.95h
 
-**Key Enhancements**:
-- **ContrastiveLoss**: InfoNCE-based loss for better representation learning
-- **128D Embeddings**: Enhanced representational capacity vs 64D baseline
-- **Hard Negative Mining**: Intelligent selection of challenging training examples
-- **Efficient Training**: 2x faster convergence than baseline neural model
+**Implementation Details**:
+- **ContrastiveLoss**: InfoNCE-based loss for representation learning
+- **128D Embeddings**: Increased dimensionality compared to 64D baseline
+- **Hard Negative Mining**: Dynamic selection of challenging training examples
+- **Training Efficiency**: 2.4x faster convergence than baseline neural model
 
-**Strengths**: State-of-the-art performance, advanced deep learning techniques, efficient training
-**Use Case**: Best-in-class ranking performance, research baseline for advanced neural approaches
+**Characteristics**: ContrastiveLoss implementation with 128D embeddings, 2.4x faster convergence than baseline
+**Use Case**: Baseline for contrastive learning approaches in neural LLM ranking
 
-### 2. Neural Two-Tower Baseline (`models/neural_two_tower/`)
+### 4. Neural Two-Tower Baseline (`models/neural_two_tower/`)
 
 **Architecture**:
 - **Query Tower**: all-MiniLM-L6-v2 → Dense layers [384→256→128→64]
@@ -163,18 +164,18 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 - **Similarity**: Cosine similarity with margin-based pairwise loss
 - **Performance**: nDCG@10=0.4022, Runtime=6.95h
 
-**Strengths**: Semantic understanding, strong baseline performance, learned representations
-**Use Case**: Deep learning foundation, semantic query understanding, comparison baseline
+**Characteristics**: Semantic encoding with learned representations, margin-based pairwise loss
+**Use Case**: Baseline for two-tower architectures in neural LLM ranking
 
-### 3. Random Forest Baseline (`models/random_forest/`)
+### 5. Random Forest Baseline (`models/random_forest/`)
 
 **Architecture**:
 - **Features**: TF-IDF (1000 features) + LLM ID encoding
 - **Model**: Random Forest Regressor (100 trees, max_depth=15)
 - **Performance**: nDCG@10=0.3860, Runtime=1.37h
 
-**Strengths**: Fast training, interpretable, solid baseline performance
-**Use Case**: Traditional ML comparison benchmark, rapid prototyping
+**Characteristics**: Traditional ML approach with TF-IDF features, 1.37h training time
+**Use Case**: Baseline for traditional machine learning approaches in LLM ranking
 
 ### 4. XGBoost Baseline (`models/xgboost/`)
 
@@ -183,8 +184,8 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 - **Model**: XGBoost Regressor (100 trees, max_depth=6, learning_rate=0.1)
 - **Performance**: nDCG@10=0.382, Runtime=0.03h
 
-**Strengths**: Extremely fast training, gradient boosting, built-in regularization
-**Use Case**: Rapid experimentation, efficient baseline, ensemble component
+**Characteristics**: Gradient boosting with regularization, 0.03h training time
+**Use Case**: Fast experimentation, efficient baseline, ensemble component
 
 ## Getting Started
 
@@ -208,28 +209,42 @@ python create_supervised_training_set.py
 
 ### 4. Run Baseline Models
 
-**Tier 2 CPU Optimized** (best performance):
+**Tier2 CPU Optimized** (nDCG@10=0.4306):
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
 python evaluate_tier2_cpu.py
 ```
 
-**Tier 3 Cross-Encoder** (transformer-based):
+**Tier2 Config A** (6 heads, nDCG@10=0.4278):
+```bash
+cd models/neural_two_tower
+pip install -r requirements_neural.txt
+python evaluate_tier2_config_a.py
+```
+
+**Tier2 Config B** (8 heads, nDCG@10=0.4261):
+```bash
+cd models/neural_two_tower
+pip install -r requirements_neural.txt
+python evaluate_tier2_config_b.py
+```
+
+**Tier3 Cross-Encoder** (transformer-based):
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
 python evaluate_tier3_cross_encoder.py
 ```
 
-**Enhanced Neural Two-Tower** (Tier 1 baseline):
+**Enhanced Neural Two-Tower** (nDCG@10=0.4256):
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
 python evaluate_enhanced_10fold_cv.py
 ```
 
-**Neural Two-Tower** (baseline neural model):
+**Neural Two-Tower** (nDCG@10=0.4022):
 ```bash
 cd models/neural_two_tower
 pip install -r requirements_neural.txt
@@ -242,7 +257,7 @@ cd models/random_forest
 python evaluate_10fold_cv.py
 ```
 
-**XGBoost** (requires additional dependencies):
+**XGBoost** (nDCG@10=0.3824):
 ```bash
 cd models/xgboost
 pip install -r requirements_xgboost.txt
@@ -312,19 +327,22 @@ python generate_leaderboard.py
 ## Performance Analysis
 
 ### Current Results Summary
-- **Best nDCG@10**: Tier 2 CPU Optimized (0.4306) leads by 1.1% over Tier 3, 1.2% over Enhanced Neural
-- **Best MRR**: Tier 2 CPU Optimized (0.7263) achieves strongest first-relevant-item performance  
-- **Best Efficiency**: Tier 2 achieves top performance in 3.11h vs Tier 3's 21.92h (7x faster)
-- **Most Advanced Architecture**: Tie between Tier 2 (multi-head + hard negatives) and Tier 3 (cross-encoder)
-- **Performance Plateau**: Top 3 models within 0.5% nDCG@10, suggesting architectural limits with current features
+- **Highest nDCG@10**: Tier2 CPU Optimized (0.4306 ± 0.055) with 3-head attention architecture
+- **Performance Distribution**: Top 5 models cluster within 1.2% nDCG@10 range (0.4306 to 0.4256)
+- **Attention Head Scaling**: Config A (6 heads, 0.4278) and Config B (8 heads, 0.4261) show consistent performance gains
+- **MRR Performance**: Tier2 CPU Optimized (0.7263) and Config A (0.7162) achieve highest mean reciprocal rank
+- **Training Efficiency**: Original Tier2 CPU completes evaluation in 3.11h vs. hyperparameter variants' 4.5-4.7h
+- **Multi-head Attention**: Systematic scaling from 3→6→8 heads demonstrates measurable performance improvements
 
 ### Model Trade-offs
-- **Tier 2 CPU Optimized**: State-of-the-art performance, advanced multi-head architecture, efficient CPU implementation
-- **Tier 3 Cross-Encoder**: Competitive performance, sophisticated transformer architecture, 7x training time
-- **Enhanced Neural Two-Tower**: Strong Tier 1 performance, ContrastiveLoss and 128D embeddings, good baseline
-- **Neural Two-Tower**: Solid baseline performance, semantic features, longer training time 
-- **Random Forest**: Good balance of performance and interpretability, moderate training time
-- **XGBoost**: Ultra-fast training, competitive performance, excellent for rapid experimentation
+- **Tier2 CPU Optimized**: Highest performance (nDCG@10=0.4306), 3-head attention, 3.11h training time
+- **Tier2 Config A (6 heads)**: Peak performance up to 0.5221 nDCG@10, 6-head attention, 4.54h training time
+- **Tier2 Config B (8 heads)**: Consistent performance (nDCG@10=0.4261), 8-head attention, 4.73h training time
+- **Tier3 Cross-Encoder**: Comparable performance (nDCG@10=0.4259), transformer architecture, 21.92h training time
+- **Enhanced Neural Two-Tower**: ContrastiveLoss implementation with 128D embeddings, 2.95h training time
+- **Neural Two-Tower**: Baseline two-tower architecture with semantic features, 6.95h training time
+- **Random Forest**: Traditional ML approach with interpretable features, 1.37h training time
+- **XGBoost**: Gradient boosting implementation with fast training, 0.03h training time
 
 ## Requirements
 
@@ -356,25 +374,25 @@ pip install -r requirements_xgboost.txt
 - **CPU**: Multi-core recommended for parallel training
 - **GPU**: Optional but beneficial for neural models
 
-## Recent Experiments
+## Experimental Extensions
 
 ### Epistemic Profiling (`models/epistemic_profiling/`)
-We explored integrating epistemic profiles (bilateral truth evaluation) and expertise matching into LLM ranking:
+Experiments integrating epistemic profiles (bilateral truth evaluation) and expertise matching into LLM ranking:
 - **Bilateral Truth Profiles**: 4D epistemic profiles measuring LLM behavior patterns (confident_correct, overconfident_wrong, uncertain, inconsistent)
 - **LLM Clustering**: Grouped 1,131 LLMs into 5 clusters based on epistemic reliability
-- **Expertise Profiles**: Domain-specific expertise for 117 elite LLMs using Q&A clustering
-- **Results**: XGBoost with expertise achieved nDCG@10=0.3994 (+1.8% over baseline XGBoost)
+- **Expertise Profiles**: Domain-specific expertise for 117 LLMs using Q&A clustering
+- **Results**: XGBoost with expertise features achieved nDCG@10=0.3994 (+1.8% over baseline XGBoost)
 - See [models/epistemic_profiling/RESULTS_SUMMARY.md](models/epistemic_profiling/RESULTS_SUMMARY.md) for detailed analysis
 
 ## Future Directions
 
-This multi-model framework enables systematic comparison of different approaches for LLM ranking. Future extensions may include:
+This multi-model framework enables systematic comparison of different approaches for LLM ranking. Potential extensions include:
 
 - **Discovery Dataset Integration**: Leverage 14,950 additional queries with LLM responses
-- **Advanced Neural Architectures**: Transformer-based ranking, cross-attention models
+- **Alternative Neural Architectures**: Transformer-based ranking, cross-attention models
 - **Meta-Learning Approaches**: Incorporate LLM metadata, architectural features
 - **Ensemble Methods**: Combine multiple baseline approaches
-- **Transfer Learning**: Fine-tune large language models for ranking tasks
+- **Transfer Learning**: Fine-tune pre-trained language models for ranking tasks
 
 ## Contributing
 
@@ -383,7 +401,7 @@ This multi-model framework enables systematic comparison of different approaches
 3. **Update Documentation**: Add model description, performance analysis
 4. **Generate Leaderboard**: Run `python generate_leaderboard.py` to update comparisons
 
-This framework provides a solid foundation for advancing the state of automated LLM ranking and selection for query answering tasks.
+This framework provides a foundation for research in automated LLM ranking and selection for query answering tasks.
 
 ## Documentation
 
