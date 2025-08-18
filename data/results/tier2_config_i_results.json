@@ -1,0 +1,153 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-16T22:19:48.863366",
+    "pipeline": "Tier2 Config I (Wider LLM Embeddings)",
+    "description": "Config G + doubled LLM embedding dimension (64 \u2192 128)",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "hyperparameters": {
+      "config": "G",
+      "pretrained": true,
+      "pretrained_model_path": "../../data/collaborative_pretrained_model.pth",
+      "epochs": 25,
+      "batch_size": 96,
+      "learning_rate": 0.0008,
+      "num_heads": 4,
+      "negative_samples": 4,
+      "hard_ratio": 0.7,
+      "temperature": 0.09,
+      "diversity_weight": 0.015,
+      "weight_decay": 5e-05,
+      "dropout": 0.18,
+      "scheduler": "CosineAnnealingLR"
+    },
+    "total_runtime_seconds": 10633.502570152283,
+    "total_runtime_hours": 2.9537507139311896
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.43273830395678026,
+      "std": 0.04338715845626258,
+      "min": 0.35320673072555553,
+      "max": 0.5012180250662887,
+      "confidence_interval_95": [
+        0.405846664539593,
+        0.4596299433739675
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.43834447087079376,
+      "std": 0.04166831131792508,
+      "min": 0.36098990994700686,
+      "max": 0.4917370828766676,
+      "confidence_interval_95": [
+        0.4125181839473411,
+        0.46417075779424644
+      ]
+    },
+    "mrr": {
+      "mean": 0.6932528740880874,
+      "std": 0.06224320426751133,
+      "min": 0.5762556191405672,
+      "max": 0.7603349673202614,
+      "confidence_interval_95": [
+        0.6546741363950076,
+        0.7318316117811673
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.4261196490255906,
+      "ndcg_5": 0.4471572496498145,
+      "mrr": 0.7581704260651628,
+      "best_epoch": 4,
+      "train_time": 1051.7159271240234,
+      "n_queries": 35
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.4229935430933484,
+      "ndcg_5": 0.4012419886078241,
+      "mrr": 0.5998015873015874,
+      "best_epoch": 19,
+      "train_time": 1340.2114570140839,
+      "n_queries": 35
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.3630803418343092,
+      "ndcg_5": 0.3771585584926518,
+      "mrr": 0.658009984296749,
+      "best_epoch": 1,
+      "train_time": 1068.5993809700012,
+      "n_queries": 34
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.35320673072555553,
+      "ndcg_5": 0.36098990994700686,
+      "mrr": 0.5762556191405672,
+      "best_epoch": 13,
+      "train_time": 1147.3109638690948,
+      "n_queries": 34
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.4541190889370684,
+      "ndcg_5": 0.45391253047168,
+      "mrr": 0.7603349673202614,
+      "best_epoch": 13,
+      "train_time": 997.2561321258545,
+      "n_queries": 34
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.4486016547466947,
+      "ndcg_5": 0.46115750284711704,
+      "mrr": 0.6867289573171925,
+      "best_epoch": 21,
+      "train_time": 1389.6756711006165,
+      "n_queries": 34
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.44470381136149795,
+      "ndcg_5": 0.4425608726266347,
+      "mrr": 0.7427431757016532,
+      "best_epoch": 6,
+      "train_time": 812.6720077991486,
+      "n_queries": 34
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.4769345304542135,
+      "ndcg_5": 0.47825185671238585,
+      "mrr": 0.6872242647058824,
+      "best_epoch": 15,
+      "train_time": 1050.1585788726807,
+      "n_queries": 34
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5012180250662887,
+      "ndcg_5": 0.4917370828766676,
+      "mrr": 0.7527310924369749,
+      "best_epoch": 7,
+      "train_time": 875.795342206955,
+      "n_queries": 34
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.43640566432323524,
+      "ndcg_5": 0.4692771564761551,
+      "mrr": 0.710528666594843,
+      "best_epoch": 3,
+      "train_time": 899.8118169307709,
+      "n_queries": 34
+    }
+  ]
+}

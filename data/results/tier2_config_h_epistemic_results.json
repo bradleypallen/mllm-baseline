@@ -1,0 +1,45 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-16T16:41:35.813651",
+    "pipeline": "Config H: GPU + Pre-trained + Epistemic Augmentation",
+    "dataset": "TREC 2025 Million LLMs Track - Augmented Dataset",
+    "total_examples": 384315,
+    "training_examples": 384315,
+    "validation_examples": 78039,
+    "synthetic_examples": 75553,
+    "augmentation_ratio": 0.24469656240081358,
+    "unique_queries": 342,
+    "train_queries": 273,
+    "val_queries": 69,
+    "unique_llms": 1131,
+    "total_runtime_seconds": 630.4787678718567,
+    "total_runtime_hours": 0.17513299107551575
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.44909751530716946,
+      "std": 0.0,
+      "min": 0.44909751530716946,
+      "max": 0.44909751530716946,
+      "confidence_interval_95": [0.44909751530716946, 0.44909751530716946]
+    },
+    "ndcg_5": {
+      "mean": 0.46807176867659417,
+      "std": 0.0,
+      "min": 0.46807176867659417,
+      "max": 0.46807176867659417,
+      "confidence_interval_95": [0.46807176867659417, 0.46807176867659417]
+    },
+    "mrr": {
+      "mean": 0.7427393235162222,
+      "std": 0.0,
+      "min": 0.7427393235162222,
+      "max": 0.7427393235162222,
+      "confidence_interval_95": [0.7427393235162222, 0.7427393235162222]
+    }
+  },
+  "training_details": {
+    "training_time_seconds": 625.8018529415131,
+    "validation_queries": 69
+  }
+}

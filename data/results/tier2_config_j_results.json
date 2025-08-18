@@ -1,0 +1,153 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-17T04:23:17.387169",
+    "pipeline": "Tier2 Config J (Even Wider LLM Embeddings + Extended Training)",
+    "description": "Config I + doubled LLM embeddings (128 \u2192 256D) + extended training (35 epochs, patience=15)",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "hyperparameters": {
+      "config": "J",
+      "pretrained": true,
+      "pretrained_model_path": "../../data/collaborative_pretrained_model.pth",
+      "epochs": 35,
+      "batch_size": 96,
+      "learning_rate": 0.0008,
+      "num_heads": 4,
+      "negative_samples": 4,
+      "hard_ratio": 0.7,
+      "temperature": 0.09,
+      "diversity_weight": 0.015,
+      "weight_decay": 5e-05,
+      "dropout": 0.18,
+      "scheduler": "CosineAnnealingLR"
+    },
+    "total_runtime_seconds": 16666.36147403717,
+    "total_runtime_hours": 4.629544853899214
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.44166359994828025,
+      "std": 0.03943202836460272,
+      "min": 0.38013402344722563,
+      "max": 0.5143390247710984,
+      "confidence_interval_95": [
+        0.41722337555934846,
+        0.46610382433721204
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.4598159124613315,
+      "std": 0.059608697200954346,
+      "min": 0.37103002391614603,
+      "max": 0.5711291220578124,
+      "confidence_interval_95": [
+        0.42287005916530895,
+        0.4967617657573541
+      ]
+    },
+    "mrr": {
+      "mean": 0.7280553264696381,
+      "std": 0.06275057676768489,
+      "min": 0.6160344693432929,
+      "max": 0.8181372549019608,
+      "confidence_interval_95": [
+        0.6891621160429124,
+        0.7669485368963638
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.455398520427985,
+      "ndcg_5": 0.5075663375819154,
+      "mrr": 0.7955311355311356,
+      "best_epoch": 16,
+      "train_time": 1745.2745790481567,
+      "n_queries": 35
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.42738987396035016,
+      "ndcg_5": 0.40426064137003576,
+      "mrr": 0.690484527144191,
+      "best_epoch": 15,
+      "train_time": 1907.8662898540497,
+      "n_queries": 35
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.38013402344722563,
+      "ndcg_5": 0.3796888622772683,
+      "mrr": 0.6160344693432929,
+      "best_epoch": 14,
+      "train_time": 1789.0721051692963,
+      "n_queries": 34
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.3807377205376696,
+      "ndcg_5": 0.37103002391614603,
+      "mrr": 0.6533788515406163,
+      "best_epoch": 21,
+      "train_time": 2165.4141249656677,
+      "n_queries": 34
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.46639833485432153,
+      "ndcg_5": 0.49692409973870655,
+      "mrr": 0.7664036346245816,
+      "best_epoch": 5,
+      "train_time": 1086.3120923042297,
+      "n_queries": 34
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.4533497783040603,
+      "ndcg_5": 0.46377781816035113,
+      "mrr": 0.7736928104575163,
+      "best_epoch": 14,
+      "train_time": 2040.2115020751953,
+      "n_queries": 34
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.439793386272013,
+      "ndcg_5": 0.4764941704840774,
+      "mrr": 0.7287114845938375,
+      "best_epoch": 9,
+      "train_time": 1516.8872711658478,
+      "n_queries": 34
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.4769402197110542,
+      "ndcg_5": 0.49340457166805873,
+      "mrr": 0.7606661241571727,
+      "best_epoch": 14,
+      "train_time": 1993.351641178131,
+      "n_queries": 34
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5143390247710984,
+      "ndcg_5": 0.5711291220578124,
+      "mrr": 0.8181372549019608,
+      "best_epoch": 1,
+      "train_time": 1074.205139875412,
+      "n_queries": 34
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.4221551171970247,
+      "ndcg_5": 0.4338834773589429,
+      "mrr": 0.6775129724020755,
+      "best_epoch": 4,
+      "train_time": 1347.4759848117828,
+      "n_queries": 34
+    }
+  ]
+}

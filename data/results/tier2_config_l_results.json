@@ -1,0 +1,184 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-17T18:26:44.566048",
+    "pipeline": "Tier2 Config L (Weak Labeled Discovery Data)",
+    "description": "Config J (256D LLM embeddings) + weak labeled discovery data (114K examples)",
+    "dataset": "TREC 2025 Million LLMs Track - Original + Weak Labeled Discovery",
+    "total_examples": 501010,
+    "unique_queries": 443,
+    "unique_llms": 1131,
+    "weak_labeled_examples": 114209,
+    "original_examples": 386801,
+    "weak_labeled_ratio": 0.22795752579788828,
+    "hyperparameters": {
+      "config": "L",
+      "base_config": "J",
+      "pretrained": true,
+      "pretrained_model_path": "../../data/collaborative_pretrained_model.pth",
+      "epochs": 35,
+      "batch_size": 96,
+      "learning_rate": 0.0008,
+      "num_heads": 4,
+      "negative_samples": 4,
+      "hard_ratio": 0.7,
+      "temperature": 0.09,
+      "diversity_weight": 0.015,
+      "weight_decay": 5e-05,
+      "dropout": 0.18,
+      "scheduler": "CosineAnnealingLR"
+    },
+    "total_runtime_seconds": 18894.44624519348,
+    "total_runtime_hours": 5.2484572903315225
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.44712984418344714,
+      "std": 0.03572452191842294,
+      "min": 0.39708698507065726,
+      "max": 0.5151252673312808,
+      "confidence_interval_95": [
+        0.42498755609721356,
+        0.46927213226968073
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.46093154603622494,
+      "std": 0.034563967134954306,
+      "min": 0.4240029862515045,
+      "max": 0.5322001705398559,
+      "confidence_interval_95": [
+        0.4395085772571636,
+        0.4823545148152863
+      ]
+    },
+    "mrr": {
+      "mean": 0.7283345778933474,
+      "std": 0.05581698889760128,
+      "min": 0.6446825396825396,
+      "max": 0.8098039215686275,
+      "confidence_interval_95": [
+        0.6937388497517922,
+        0.7629303060349026
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.4481709804467508,
+      "ndcg_5": 0.44547759597069153,
+      "mrr": 0.6446825396825396,
+      "best_epoch": 23,
+      "train_time": 2568.0548889636993,
+      "n_queries": 35,
+      "train_examples": 461425,
+      "val_examples": 39585
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.4171681916191351,
+      "ndcg_5": 0.4240029862515045,
+      "mrr": 0.6875832193342453,
+      "best_epoch": 17,
+      "train_time": 2181.0553979873657,
+      "n_queries": 35,
+      "train_examples": 461425,
+      "val_examples": 39585
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.4045829285520332,
+      "ndcg_5": 0.44045858450410247,
+      "mrr": 0.720175993748658,
+      "best_epoch": 13,
+      "train_time": 2001.287452697754,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.39708698507065726,
+      "ndcg_5": 0.42581005346242395,
+      "mrr": 0.7159907902554961,
+      "best_epoch": 29,
+      "train_time": 2485.9032757282257,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.4842673405185265,
+      "ndcg_5": 0.479649084368247,
+      "mrr": 0.8093137254901961,
+      "best_epoch": 8,
+      "train_time": 1570.9826860427856,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.44243200236010427,
+      "ndcg_5": 0.47265177764355193,
+      "mrr": 0.7199346405228758,
+      "best_epoch": 7,
+      "train_time": 1383.2355132102966,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.4396461207027973,
+      "ndcg_5": 0.44848290586379874,
+      "mrr": 0.7416666666666666,
+      "best_epoch": 5,
+      "train_time": 1336.0303328037262,
+      "n_queries": 34,
+      "train_examples": 462557,
+      "val_examples": 38453
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.48443808614534306,
+      "ndcg_5": 0.5076701141445127,
+      "mrr": 0.7826042181578513,
+      "best_epoch": 7,
+      "train_time": 1510.3647458553314,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5151252673312808,
+      "ndcg_5": 0.5322001705398559,
+      "mrr": 0.8098039215686275,
+      "best_epoch": 13,
+      "train_time": 1326.0366189479828,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.4383805390878429,
+      "ndcg_5": 0.43291218761355993,
+      "mrr": 0.6515900635063185,
+      "best_epoch": 31,
+      "train_time": 2530.6796758174896,
+      "n_queries": 34,
+      "train_examples": 462556,
+      "val_examples": 38454
+    }
+  ],
+  "weak_labeling_analysis": {
+    "config_j_baseline": 0.4417,
+    "config_l_weak_labeled": 0.44712984418344714,
+    "weak_labeling_benefit": 0.005429844183447163,
+    "improvement_percentage": 1.2293059052404718,
+    "dataset_scale_multiplier": 1.2952655241325643
+  }
+}

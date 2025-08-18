@@ -9,24 +9,28 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Multi-Model Approach**: This framework implements and compares multiple baseline approaches, providing standardized evaluation protocols and performance benchmarks for understanding different approaches to the LLM ranking task.
 
 **Current Baselines**:
-- **Tier2 CPU Optimized**: Neural two-tower architecture with multi-head attention (3 heads) achieving nDCG@10=0.4306
-- **Tier2 Config A & B**: Hyperparameter-optimized variants with 6-8 attention heads achieving nDCG@10=0.4278/0.4261
-- **Tier3 Cross-Encoder**: Joint query-LLM encoding with transformer attention for direct relevance prediction
-- **Enhanced Neural Two-Tower**: Deep learning with ContrastiveLoss, 128D embeddings, and hard negative mining
-- **Neural Two-Tower**: Deep learning approach with sentence transformers and learned embeddings
-- **Random Forest Regressor**: Traditional ML with TF-IDF features and LLM identity encoding
-- **XGBoost Regressor**: Gradient boosting with regularization and fast training
+- **🏆 Tier2 Config L**: Weak labeled discovery data achieving **nDCG@10=0.4471** - CURRENT CHAMPION
+- **Tier2 Config J**: 256D LLM embeddings with extended training achieving nDCG@10=0.4417
+- **Tier2 Config I**: Wider LLM embeddings (128D) achieving nDCG@10=0.4327
+- **Tier2 CPU Optimized**: Neural two-tower with multi-head attention achieving nDCG@10=0.4306
+- **Tier3 Cross-Encoder**: Joint query-LLM encoding with transformer attention
+- **Enhanced Neural Two-Tower**: Deep learning with ContrastiveLoss and hard negative mining
+- **Neural Two-Tower**: Deep learning approach with sentence transformers
+- **Random Forest Regressor**: Traditional ML with TF-IDF features
+- **XGBoost Regressor**: Gradient boosting with multiple variants
 
 ## Current Leaderboard
 
+🚀 **Latest Results** showing breakthrough performance with weak labeling approaches:
+
 | Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime |
 |------|--------|---------|--------|-----|---------|
-| 1 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
-| 2 | **Tier2 Cpu Optimized Config A** | 0.4278 ± 0.052 | 0.4399 ± 0.054 | 0.7162 ± 0.066 | 4.54h |
-| 3 | **Tier2 Cpu Optimized Config B** | 0.4261 ± 0.052 | 0.4356 ± 0.058 | 0.6783 ± 0.071 | 4.73h |
-| 4 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
-| 5 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
-| 6 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
+| 🥇 | **Tier2 Config L** | **0.4471** ± 0.036 | 0.4609 ± 0.035 | 0.7283 ± 0.056 | 5.25h |
+| 🥈 | **Tier2 Config J** | **0.4417** ± 0.039 | 0.4598 ± 0.060 | 0.7281 ± 0.063 | 4.63h |
+| 🥉 | **Tier2 Config I** | **0.4327** ± 0.043 | 0.4383 ± 0.042 | 0.6933 ± 0.062 | 2.95h |
+| 4 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
+| 5 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
+| 6 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 

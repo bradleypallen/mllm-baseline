@@ -1,0 +1,153 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-16T15:08:20.239454",
+    "pipeline": "Tier2 CPU Optimized (Config G)",
+    "description": "Ultimate config: Pre-trained query encoder + Config F optimal hyperparameters",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "hyperparameters": {
+      "config": "G",
+      "pretrained": true,
+      "pretrained_model_path": "../../data/collaborative_pretrained_model.pth",
+      "epochs": 25,
+      "batch_size": 96,
+      "learning_rate": 0.0008,
+      "num_heads": 4,
+      "negative_samples": 4,
+      "hard_ratio": 0.7,
+      "temperature": 0.09,
+      "diversity_weight": 0.015,
+      "weight_decay": 5e-05,
+      "dropout": 0.18,
+      "scheduler": "CosineAnnealingLR"
+    },
+    "total_runtime_seconds": 11002.709904193878,
+    "total_runtime_hours": 3.056308306720522
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.4302666668367676,
+      "std": 0.03939073430034499,
+      "min": 0.3679917430772814,
+      "max": 0.5126123986161456,
+      "confidence_interval_95": [
+        0.4058520367740282,
+        0.45468129689950704
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.4335286210009944,
+      "std": 0.04164197993342001,
+      "min": 0.3765898738832439,
+      "max": 0.5199210935637116,
+      "confidence_interval_95": [
+        0.4077186544387421,
+        0.45933858756324664
+      ]
+    },
+    "mrr": {
+      "mean": 0.7030221943763213,
+      "std": 0.05297119745988211,
+      "min": 0.6279876019233605,
+      "max": 0.8074696545284781,
+      "confidence_interval_95": [
+        0.6701903060418096,
+        0.735854082710833
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.43312933126851566,
+      "ndcg_5": 0.4345912599553321,
+      "mrr": 0.6990759365947335,
+      "best_epoch": 4,
+      "train_time": 1031.5461068153381,
+      "n_queries": 35
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.39638394621693146,
+      "ndcg_5": 0.38520829347538355,
+      "mrr": 0.6718215771156948,
+      "best_epoch": 11,
+      "train_time": 1044.0490832328796,
+      "n_queries": 35
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.39380551715347767,
+      "ndcg_5": 0.3957430235361654,
+      "mrr": 0.6713400302649796,
+      "best_epoch": 16,
+      "train_time": 1408.6945068836212,
+      "n_queries": 34
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.3679917430772814,
+      "ndcg_5": 0.3765898738832439,
+      "mrr": 0.6614612511671334,
+      "best_epoch": 14,
+      "train_time": 1171.5100390911102,
+      "n_queries": 34
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.4583887821693398,
+      "ndcg_5": 0.45034351740933,
+      "mrr": 0.6665032679738562,
+      "best_epoch": 18,
+      "train_time": 1449.8395698070526,
+      "n_queries": 34
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.4223487617368806,
+      "ndcg_5": 0.42245158123621646,
+      "mrr": 0.6279876019233605,
+      "best_epoch": 6,
+      "train_time": 892.8816609382629,
+      "n_queries": 34
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.4312469843128963,
+      "ndcg_5": 0.45851857782060224,
+      "mrr": 0.7558765172735761,
+      "best_epoch": 2,
+      "train_time": 858.8888020515442,
+      "n_queries": 34
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.4676000377890005,
+      "ndcg_5": 0.4736374400384418,
+      "mrr": 0.7635893246187363,
+      "best_epoch": 13,
+      "train_time": 1086.7629480361938,
+      "n_queries": 34
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5126123986161456,
+      "ndcg_5": 0.5199210935637116,
+      "mrr": 0.8074696545284781,
+      "best_epoch": 5,
+      "train_time": 986.775856256485,
+      "n_queries": 34
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.4191591660272072,
+      "ndcg_5": 0.4182815490915165,
+      "mrr": 0.7050967823026646,
+      "best_epoch": 12,
+      "train_time": 1071.6076951026917,
+      "n_queries": 34
+    }
+  ]
+}

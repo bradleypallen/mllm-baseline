@@ -1,0 +1,151 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-16T03:20:56.596818",
+    "pipeline": "Tier2 CPU Optimized (Config D)",
+    "description": "Enhanced Two-Tower with Config D: 4 attention heads, batch size 96",
+    "dataset": "TREC 2025 Million LLMs Track - Complete Dataset",
+    "total_examples": 386801,
+    "unique_queries": 342,
+    "unique_llms": 1131,
+    "hyperparameters": {
+      "config": "D",
+      "epochs": 25,
+      "batch_size": 96,
+      "learning_rate": 0.0008,
+      "num_heads": 4,
+      "negative_samples": 4,
+      "hard_ratio": 0.7,
+      "temperature": 0.09,
+      "diversity_weight": 0.015,
+      "weight_decay": 5e-05,
+      "dropout": 0.18,
+      "scheduler": "CosineAnnealingLR"
+    },
+    "total_runtime_seconds": 8555.456830739975,
+    "total_runtime_hours": 2.3765157863166597
+  },
+  "performance_metrics": {
+    "ndcg_10": {
+      "mean": 0.4219434259574257,
+      "std": 0.04617647925690922,
+      "min": 0.35245228185323635,
+      "max": 0.5003765323817256,
+      "confidence_interval_95": [
+        0.3933229475966726,
+        0.4505639043181788
+      ]
+    },
+    "ndcg_5": {
+      "mean": 0.434610021738434,
+      "std": 0.053036385783366544,
+      "min": 0.36179695217676544,
+      "max": 0.5218532841856284,
+      "confidence_interval_95": [
+        0.4017377292624269,
+        0.4674823142144411
+      ]
+    },
+    "mrr": {
+      "mean": 0.7152781103953143,
+      "std": 0.07322067532213965,
+      "min": 0.5888202339759433,
+      "max": 0.8154555940023068,
+      "confidence_interval_95": [
+        0.66989546565192,
+        0.7606607551387086
+      ]
+    }
+  },
+  "fold_by_fold_results": [
+    {
+      "fold": 1,
+      "ndcg_10": 0.44931068291779547,
+      "ndcg_5": 0.46966102787533714,
+      "mrr": 0.7478911564625851,
+      "best_epoch": 4,
+      "train_time": 812.3506169319153,
+      "n_queries": 35
+    },
+    {
+      "fold": 2,
+      "ndcg_10": 0.379928686150176,
+      "ndcg_5": 0.38811496152575264,
+      "mrr": 0.6500340136054421,
+      "best_epoch": 2,
+      "train_time": 845.0388281345367,
+      "n_queries": 35
+    },
+    {
+      "fold": 3,
+      "ndcg_10": 0.3652772017886143,
+      "ndcg_5": 0.3873828126301043,
+      "mrr": 0.692639409692176,
+      "best_epoch": 8,
+      "train_time": 827.4885530471802,
+      "n_queries": 34
+    },
+    {
+      "fold": 4,
+      "ndcg_10": 0.35245228185323635,
+      "ndcg_5": 0.36179695217676544,
+      "mrr": 0.5888202339759433,
+      "best_epoch": 5,
+      "train_time": 822.6462967395782,
+      "n_queries": 34
+    },
+    {
+      "fold": 5,
+      "ndcg_10": 0.46758971111525366,
+      "ndcg_5": 0.4833309824430998,
+      "mrr": 0.8154555940023068,
+      "best_epoch": 5,
+      "train_time": 821.0852348804474,
+      "n_queries": 34
+    },
+    {
+      "fold": 6,
+      "ndcg_10": 0.4020427214221812,
+      "ndcg_5": 0.3903557037774727,
+      "mrr": 0.6317693744164332,
+      "best_epoch": 7,
+      "train_time": 836.3602340221405,
+      "n_queries": 34
+    },
+    {
+      "fold": 7,
+      "ndcg_10": 0.4653772226351434,
+      "ndcg_5": 0.5039779943198903,
+      "mrr": 0.8047794117647059,
+      "best_epoch": 10,
+      "train_time": 826.7310011386871,
+      "n_queries": 34
+    },
+    {
+      "fold": 8,
+      "ndcg_10": 0.4292013867774902,
+      "ndcg_5": 0.422332976272785,
+      "mrr": 0.7657037815126051,
+      "best_epoch": 3,
+      "train_time": 904.0066177845001,
+      "n_queries": 34
+    },
+    {
+      "fold": 9,
+      "ndcg_10": 0.5003765323817256,
+      "ndcg_5": 0.5218532841856284,
+      "mrr": 0.7720588235294118,
+      "best_epoch": 9,
+      "train_time": 901.593713760376,
+      "n_queries": 34
+    },
+    {
+      "fold": 10,
+      "ndcg_10": 0.40787783253264065,
+      "ndcg_5": 0.41729352217750354,
+      "mrr": 0.6836293049915341,
+      "best_epoch": 1,
+      "train_time": 958.012228012085,
+      "n_queries": 34
+    }
+  ]
+}
