@@ -1,6 +1,6 @@
 # TREC 2025 Million LLMs Track - Model Leaderboard
 
-*Generated on 2025-08-17 21:52:10*
+*Generated on 2025-08-18 03:57:49*
 
 ## Performance Comparison
 
@@ -11,41 +11,42 @@ Ranking models by nDCG@10 performance on 10-fold cross-validation.
 | 1 | **Tier2 Config H Epistemic** | 0.4491 ± 0.000 | 0.4681 ± 0.000 | 0.7427 ± 0.000 | 0.18h |
 | 2 | **Tier2 Config L** | 0.4471 ± 0.036 | 0.4609 ± 0.035 | 0.7283 ± 0.056 | 5.25h |
 | 3 | **Tier2 Config J** | 0.4417 ± 0.039 | 0.4598 ± 0.060 | 0.7281 ± 0.063 | 4.63h |
-| 4 | **Tier2 Config I** | 0.4327 ± 0.043 | 0.4383 ± 0.042 | 0.6933 ± 0.062 | 2.95h |
-| 5 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
-| 6 | **Tier2 Cpu Optimized Config G** | 0.4303 ± 0.039 | 0.4335 ± 0.042 | 0.7030 ± 0.053 | 3.06h |
-| 7 | **Tier2 Config H Cv Epistemic** | 0.4297 ± 0.050 | 0.4346 ± 0.052 | 0.7098 ± 0.078 | 1.32h |
-| 8 | **Tier2 Cpu Optimized Config F** | 0.4292 ± 0.051 | 0.4393 ± 0.054 | 0.6884 ± 0.079 | 3.22h |
-| 9 | **Tier2 Cpu Optimized Config A** | 0.4278 ± 0.052 | 0.4399 ± 0.054 | 0.7162 ± 0.066 | 4.54h |
-| 10 | **Tier2 Cpu Optimized Config B** | 0.4261 ± 0.052 | 0.4356 ± 0.058 | 0.6783 ± 0.071 | 4.73h |
-| 11 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
-| 12 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
-| 13 | **Tier2 Cpu Optimized Config D** | 0.4219 ± 0.046 | 0.4346 ± 0.053 | 0.7153 ± 0.073 | 2.38h |
-| 14 | **Tier2 Cpu Optimized Tuned** | 0.4194 ± 0.048 | 0.4328 ± 0.047 | 0.7004 ± 0.061 | 2.71h |
-| 15 | **Tier2 With Profiles Simplified** | 0.4128 ± 0.031 | 0.4232 ± 0.037 | 0.7083 ± 0.053 | 6.23h |
-| 16 | **Xgboost Hybrid** | 0.4107 ± 0.044 | 0.4216 ± 0.048 | 0.6979 ± 0.060 | 0.00h |
-| 17 | **Tier2 Config K** | 0.4067 ± 0.048 | 0.4125 ± 0.052 | 0.6782 ± 0.065 | 6.38h |
-| 18 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 19 | **Xgboost Smart Imputation** | 0.4017 ± 0.037 | 0.4098 ± 0.039 | 0.6690 ± 0.049 | 0.00h |
-| 20 | **Enhanced Two Tower Epistemic** | 0.4009 ± 0.061 | 0.4093 ± 0.074 | 0.6777 ± 0.090 | 1.30h |
-| 21 | **Xgboost Ensemble** | 0.4003 ± 0.040 | 0.4109 ± 0.039 | 0.6844 ± 0.056 | 0.00h |
-| 22 | **Xgboost Deeper** | 0.3997 ± 0.031 | 0.4017 ± 0.022 | 0.6630 ± 0.056 | 0.00h |
-| 23 | **Xgboost Weighted Ensemble** | 0.3994 ± 0.029 | 0.4145 ± 0.035 | 0.6905 ± 0.044 | 0.33h |
-| 24 | **Xgboost Expertise** | 0.3994 ± 0.043 | 0.4077 ± 0.048 | 0.6842 ± 0.082 | 0.25h |
-| 25 | **Xgboost Interactions** | 0.3977 ± 0.049 | 0.4058 ± 0.056 | 0.6578 ± 0.065 | 0.00h |
-| 26 | **Xgboost Fast Advanced** | 0.3962 ± 0.037 | 0.4042 ± 0.040 | 0.6785 ± 0.075 | 0.03h |
-| 27 | **Xgboost Twostage** | 0.3957 ± 0.048 | 0.4056 ± 0.045 | 0.6827 ± 0.062 | 0.00h |
-| 28 | **Simplified Epistemic 300** | 0.3952 ± 0.061 | 0.4040 ± 0.064 | 0.6721 ± 0.092 | 1.37h |
-| 29 | **Xgboost Discovery Optimized** | 0.3938 ± 0.028 | 0.4127 ± 0.036 | 0.7042 ± 0.054 | 0.01h |
-| 30 | **Xgboost Epistemic** | 0.3927 ± 0.049 | 0.4062 ± 0.048 | 0.6691 ± 0.045 | 0.01h |
-| 31 | **Xgboost Full Profiles** | 0.3910 ± 0.037 | 0.4009 ± 0.042 | 0.6953 ± 0.068 | 0.00h |
-| 32 | **Xgboost Discovery** | 0.3891 ± 0.029 | 0.3965 ± 0.037 | 0.6809 ± 0.046 | 0.04h |
-| 33 | **Xgboost Minimal Reliability** | 0.3886 ± 0.048 | 0.3919 ± 0.054 | 0.6157 ± 0.070 | 0.00h |
-| 34 | **Xgboost Complete Profiles** | 0.3874 ± 0.034 | 0.4001 ± 0.045 | 0.6885 ± 0.062 | 0.00h |
-| 35 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
-| 36 | **Xgboost Massive Synthetic** | 0.3828 ± 0.048 | 0.3815 ± 0.048 | 0.6305 ± 0.058 | 0.54h |
-| 37 | **Xgboost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
-| 38 | **Xgboost Fair Comparison** | 0.3652 ± 0.040 | 0.3618 ± 0.041 | 0.6087 ± 0.065 | 0.06h |
+| 4 | **Tier2 Config M** | 0.4410 ± 0.042 | 0.4553 ± 0.041 | 0.7209 ± 0.064 | 5.42h |
+| 5 | **Tier2 Config I** | 0.4327 ± 0.043 | 0.4383 ± 0.042 | 0.6933 ± 0.062 | 2.95h |
+| 6 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
+| 7 | **Tier2 Cpu Optimized Config G** | 0.4303 ± 0.039 | 0.4335 ± 0.042 | 0.7030 ± 0.053 | 3.06h |
+| 8 | **Tier2 Config H Cv Epistemic** | 0.4297 ± 0.050 | 0.4346 ± 0.052 | 0.7098 ± 0.078 | 1.32h |
+| 9 | **Tier2 Cpu Optimized Config F** | 0.4292 ± 0.051 | 0.4393 ± 0.054 | 0.6884 ± 0.079 | 3.22h |
+| 10 | **Tier2 Cpu Optimized Config A** | 0.4278 ± 0.052 | 0.4399 ± 0.054 | 0.7162 ± 0.066 | 4.54h |
+| 11 | **Tier2 Cpu Optimized Config B** | 0.4261 ± 0.052 | 0.4356 ± 0.058 | 0.6783 ± 0.071 | 4.73h |
+| 12 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
+| 13 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 14 | **Tier2 Cpu Optimized Config D** | 0.4219 ± 0.046 | 0.4346 ± 0.053 | 0.7153 ± 0.073 | 2.38h |
+| 15 | **Tier2 Cpu Optimized Tuned** | 0.4194 ± 0.048 | 0.4328 ± 0.047 | 0.7004 ± 0.061 | 2.71h |
+| 16 | **Tier2 With Profiles Simplified** | 0.4128 ± 0.031 | 0.4232 ± 0.037 | 0.7083 ± 0.053 | 6.23h |
+| 17 | **Xgboost Hybrid** | 0.4107 ± 0.044 | 0.4216 ± 0.048 | 0.6979 ± 0.060 | 0.00h |
+| 18 | **Tier2 Config K** | 0.4067 ± 0.048 | 0.4125 ± 0.052 | 0.6782 ± 0.065 | 6.38h |
+| 19 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
+| 20 | **Xgboost Smart Imputation** | 0.4017 ± 0.037 | 0.4098 ± 0.039 | 0.6690 ± 0.049 | 0.00h |
+| 21 | **Enhanced Two Tower Epistemic** | 0.4009 ± 0.061 | 0.4093 ± 0.074 | 0.6777 ± 0.090 | 1.30h |
+| 22 | **Xgboost Ensemble** | 0.4003 ± 0.040 | 0.4109 ± 0.039 | 0.6844 ± 0.056 | 0.00h |
+| 23 | **Xgboost Deeper** | 0.3997 ± 0.031 | 0.4017 ± 0.022 | 0.6630 ± 0.056 | 0.00h |
+| 24 | **Xgboost Weighted Ensemble** | 0.3994 ± 0.029 | 0.4145 ± 0.035 | 0.6905 ± 0.044 | 0.33h |
+| 25 | **Xgboost Expertise** | 0.3994 ± 0.043 | 0.4077 ± 0.048 | 0.6842 ± 0.082 | 0.25h |
+| 26 | **Xgboost Interactions** | 0.3977 ± 0.049 | 0.4058 ± 0.056 | 0.6578 ± 0.065 | 0.00h |
+| 27 | **Xgboost Fast Advanced** | 0.3962 ± 0.037 | 0.4042 ± 0.040 | 0.6785 ± 0.075 | 0.03h |
+| 28 | **Xgboost Twostage** | 0.3957 ± 0.048 | 0.4056 ± 0.045 | 0.6827 ± 0.062 | 0.00h |
+| 29 | **Simplified Epistemic 300** | 0.3952 ± 0.061 | 0.4040 ± 0.064 | 0.6721 ± 0.092 | 1.37h |
+| 30 | **Xgboost Discovery Optimized** | 0.3938 ± 0.028 | 0.4127 ± 0.036 | 0.7042 ± 0.054 | 0.01h |
+| 31 | **Xgboost Epistemic** | 0.3927 ± 0.049 | 0.4062 ± 0.048 | 0.6691 ± 0.045 | 0.01h |
+| 32 | **Xgboost Full Profiles** | 0.3910 ± 0.037 | 0.4009 ± 0.042 | 0.6953 ± 0.068 | 0.00h |
+| 33 | **Xgboost Discovery** | 0.3891 ± 0.029 | 0.3965 ± 0.037 | 0.6809 ± 0.046 | 0.04h |
+| 34 | **Xgboost Minimal Reliability** | 0.3886 ± 0.048 | 0.3919 ± 0.054 | 0.6157 ± 0.070 | 0.00h |
+| 35 | **Xgboost Complete Profiles** | 0.3874 ± 0.034 | 0.4001 ± 0.045 | 0.6885 ± 0.062 | 0.00h |
+| 36 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| 37 | **Xgboost Massive Synthetic** | 0.3828 ± 0.048 | 0.3815 ± 0.048 | 0.6305 ± 0.058 | 0.54h |
+| 38 | **Xgboost** | 0.3824 ± 0.045 | 0.3808 ± 0.047 | 0.6206 ± 0.052 | 0.03h |
+| 39 | **Xgboost Fair Comparison** | 0.3652 ± 0.040 | 0.3618 ± 0.041 | 0.6087 ± 0.065 | 0.06h |
 
 
 ## Evaluation Protocol
@@ -68,6 +69,10 @@ Ranking models by nDCG@10 performance on 10-fold cross-validation.
 ### Tier2 Config J
 - **Performance**: nDCG@10=0.4417, MRR=0.7281
 - **Runtime**: 4.63 hours
+
+### Tier2 Config M
+- **Performance**: nDCG@10=0.4410, MRR=0.7209
+- **Runtime**: 5.42 hours
 
 ### Tier2 Config I
 - **Performance**: nDCG@10=0.4327, MRR=0.6933
@@ -236,6 +241,7 @@ To add a new model to the leaderboard:
 - `data/results/tier2_config_h_epistemic_results.json` - Tier2 Config H Epistemic detailed results
 - `data/results/tier2_config_l_results.json` - Tier2 Config L detailed results
 - `data/results/tier2_config_j_results.json` - Tier2 Config J detailed results
+- `data/results/tier2_config_m_results.json` - Tier2 Config M detailed results
 - `data/results/tier2_config_i_results.json` - Tier2 Config I detailed results
 - `data/results/tier2_cpu_optimized_results.json` - Tier2 Cpu Optimized detailed results
 - `data/results/tier2_cpu_optimized_config_g_results.json` - Tier2 Cpu Optimized Config G detailed results

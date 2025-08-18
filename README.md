@@ -11,6 +11,7 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 **Current Baselines**:
 - **🏆 Tier2 Config L**: Weak labeled discovery data achieving **nDCG@10=0.4471** - CURRENT CHAMPION
 - **Tier2 Config J**: 256D LLM embeddings with extended training achieving nDCG@10=0.4417
+- **Tier2 Config M**: Massive-scale weak labeled data achieving nDCG@10=0.4410 with **0.5147 record peak**
 - **Tier2 Config I**: Wider LLM embeddings (128D) achieving nDCG@10=0.4327
 - **Tier2 CPU Optimized**: Neural two-tower with multi-head attention achieving nDCG@10=0.4306
 - **Tier3 Cross-Encoder**: Joint query-LLM encoding with transformer attention
@@ -27,10 +28,10 @@ A comprehensive machine learning framework for ranking Large Language Models (LL
 |------|--------|---------|--------|-----|---------|
 | 🥇 | **Tier2 Config L** | **0.4471** ± 0.036 | 0.4609 ± 0.035 | 0.7283 ± 0.056 | 5.25h |
 | 🥈 | **Tier2 Config J** | **0.4417** ± 0.039 | 0.4598 ± 0.060 | 0.7281 ± 0.063 | 4.63h |
-| 🥉 | **Tier2 Config I** | **0.4327** ± 0.043 | 0.4383 ± 0.042 | 0.6933 ± 0.062 | 2.95h |
-| 4 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
-| 5 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
-| 6 | **Enhanced Neural Two Tower** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h |
+| 🥉 | **Tier2 Config M** | **0.4410** ± 0.042 | 0.4553 ± 0.041 | 0.7209 ± 0.064 | 5.42h |
+| 4 | **Tier2 Config I** | **0.4327** ± 0.043 | 0.4383 ± 0.042 | 0.6933 ± 0.062 | 2.95h |
+| 5 | **Tier2 Cpu Optimized** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h |
+| 6 | **Tier3 Cross Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h |
 
 *See [leaderboard.md](leaderboard.md) for detailed comparison*
 
@@ -456,6 +457,7 @@ This framework provides a foundation for research in automated LLM ranking and s
 ### Core Documentation
 - **[README.md](README.md)** - Main framework overview and getting started guide
 - **[CLAUDE.md](CLAUDE.md)** - Detailed development guidance and technical implementation details
+- **[docs/weak_labeling_methodology.md](docs/weak_labeling_methodology.md)** - Comprehensive weak labeling methodology and breakthrough results
 - **[NAMING_CONVENTIONS.md](NAMING_CONVENTIONS.md)** - Standards for implementing new models
 - **[TESTING.md](TESTING.md)** - Testing strategies and verification procedures
 
