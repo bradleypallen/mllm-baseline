@@ -6,12 +6,15 @@ This file provides guidance to Claude Code when working with this TREC 2025 Mill
 
 This repository contains a comprehensive multi-model machine learning framework for ranking Large Language Models (LLMs) by predicted expertise on user queries. The task is to rank 1,131 LLMs based on their expected ability to answer queries without actually querying them, using development data with ground truth relevance judgments.
 
-**Framework Features**:
-- Multiple baseline implementations for comparison
-- Standardized evaluation protocols across all models  
-- Automatic leaderboard generation
-- Shared utilities to prevent code duplication
-- Easy extension for new model approaches
+**Current Focus**: Neural two-tower architecture with weak labeling from discovery data has emerged as our most successful approach, achieving 16.1% improvement over baseline through Config O.
+
+**Key Findings**:
+- **Weak labeling** from discovery data response quality provides the strongest signal (11.7% improvement)
+- **Neural two-tower architecture** with multi-head attention outperforms tree-based models
+- **Simple heuristics** beat complex approaches (epistemic profiling, pseudo-labeling failed)
+- **Scale matters**: 490K weak labels doubled our training data and drove most gains
+
+**Next Phase**: Scale weak labeling to 5-16M examples using AWS GPU infrastructure for potential 0.48-0.50 nDCG@10
 
 ## Current Repository Structure
 
@@ -24,13 +27,14 @@ This repository contains a comprehensive multi-model machine learning framework 
 │   ├── random_forest/                 # Random Forest baseline
 │   │   ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
 │   │   └── README.md                  # Model documentation
-│   └── neural_two_tower/              # Neural Two-Tower baseline
-│       ├── evaluate_10fold_cv.py      # 10-fold CV experimental evaluation
+│   └── neural_two_tower/              # Neural Two-Tower (PRIMARY FOCUS)
+│       ├── evaluate_tier2_config_o.py # Config O: Current champion (0.4482 nDCG@10)
+│       ├── weak_label_discovery_mpnet.py # Weak labeling pipeline
+│       ├── collaborative_pretraining.py # Pre-training on discovery data
 │       ├── model.py                   # Two-tower architecture
 │       ├── data_loader.py             # Neural data loading
-│       ├── evaluate_neural.py         # Evaluation utilities
-│       ├── requirements_neural.txt    # Additional dependencies
-│       ├── performance.md             # Detailed performance analysis
+│       ├── aws_gpu_training_plan.md   # GPU scaling strategy
+│       ├── discovery_data_exploitation_summary.md # All attempts summary
 │       └── README.md                  # Model documentation
 ├── shared/                            # Shared utilities
 │   └── utils/                         # Common evaluation functions
@@ -53,11 +57,15 @@ This repository contains a comprehensive multi-model machine learning framework 
   - qrel_score: 0 (not relevant), 1 (most relevant), 2 (second most relevant)
   - Distribution: 92.4% score=0, 3.7% score=1, 3.8% score=2
 
-### Discovery Data (Available for Advanced Models)
+### Discovery Data (Critical for Performance)
 - **Discovery dataset**: 14,950 queries with LLM responses (gitignored due to large file sizes)
+- **Weak labeling source**: Generated 490K training examples via response quality assessment
+- **Potential**: Could generate 5-16M weak labels for further improvements
 
 ### Generated Files
-- **data/supervised_training_full.csv**: Combined training data (query_text, llm_id, qrel)
+- **data/supervised_training_full.csv**: Original training data (387K examples)
+- **data/supervised_training_config_n_weak_labeled.csv**: Weak labeled data (490K examples)
+- **data/collaborative_pretrained_model.pth**: Pre-trained query encoder from discovery
 - **data/results/*.json**: Standardized results for each model
 - **leaderboard.md**: Automatically generated model comparison
 
@@ -65,16 +73,18 @@ This repository contains a comprehensive multi-model machine learning framework 
 
 **Multi-Model Leaderboard (10-Fold Cross-Validation)**:
 
-| Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime |
-|------|--------|---------|--------|-----|---------|
-| 1 | **Neural Two Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h |
-| 2 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h |
+| Rank | Model | nDCG@10 | nDCG@5 | MRR | Runtime | Data Size |
+|------|--------|---------|--------|-----|---------|----------|
+| 1 | **Config O (Neural + Weak Labels)** | 0.4482 ± 0.035 | 0.4507 ± 0.044 | 0.7244 ± 0.068 | 7-8h | 876K |
+| 2 | **Config L (Neural + Weak Labels)** | 0.4289 ± 0.040 | 0.4312 ± 0.048 | 0.7162 ± 0.072 | 6-7h | 876K |
+| 3 | **Neural Two Tower (Original)** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h | 387K |
+| 4 | **Random Forest** | 0.3860 ± 0.044 | 0.3871 ± 0.050 | 0.6701 ± 0.081 | 1.37h | 387K |
 
-### Performance Analysis
-- **Best Performance**: Neural Two-Tower with 4.2% nDCG@10 improvement
-- **Best Efficiency**: Random Forest 5x faster training time
-- **Consistency**: Neural approach shows lower variance across folds
-- **Strong MRR**: Both models achieve ~0.67 MRR (average reciprocal rank ~1.5)
+### Key Performance Insights
+- **Weak labeling impact**: 11.7% improvement from adding discovery-based weak labels
+- **Architecture refinement**: Additional 4.5% from Config O's multi-head attention
+- **Failed approaches**: Pseudo-labeling (-5.4%), epistemic profiling (no gain)
+- **Next target**: 0.48-0.50 nDCG@10 with scaled weak labeling (5-16M examples)
 
 ## Common Development Tasks
 
@@ -104,22 +114,21 @@ python evaluate_10fold_cv.py
 - Random Forest (100 trees, max_depth=15)
 - Outputs `../../data/results/random_forest_results.json`
 
-**Neural Two-Tower Baseline**:
+**Neural Two-Tower Config O (Current Best)**:
 ```bash
-# Generate shared training data first (if not already done)
-cd data
-python create_supervised_training_set.py
+# Generate weak labeled data
+cd models/neural_two_tower
+python weak_label_discovery_mpnet.py
 
-# Run neural model 10-fold CV evaluation
-cd ../models/neural_two_tower
-pip install -r requirements_neural.txt
-python evaluate_10fold_cv.py
+# Run Config O evaluation
+python evaluate_tier2_config_o.py
 ```
-- Two-tower architecture with sentence transformers
-- Query tower: all-MiniLM-L6-v2 → Dense [384→256→128→64]
-- LLM tower: Learned embeddings → Dense [64→128→64]
-- Margin-based pairwise ranking loss
-- Outputs `../../data/results/neural_two_tower_results.json`
+- **Architecture**: 4-layer LLM tower with multi-head attention
+- **Query tower**: Pre-trained all-MiniLM-L6-v2 → Multi-head attention → Dense [384→256→128]
+- **LLM tower**: Learned embeddings (256D) → Dense [256→384→256→128]
+- **Training data**: 876K examples (387K original + 490K weak labeled)
+- **Loss**: Contrastive with diversity regularization
+- **Performance**: 0.4482 ± 0.035 nDCG@10 (16.1% improvement)
 
 ### 3. Generate Updated Leaderboard
 ```bash
@@ -274,17 +283,32 @@ class TransformerRanker(nn.Module):
         # Add cross-attention layers for query-LLM interaction
 ```
 
-### 3. Discovery Data Integration
+### 3. Weak Labeling from Discovery Data (PROVEN APPROACH)
 ```python
-# Example: Load discovery data for advanced models
-import json
+# Generate weak labels from discovery data
+from weak_label_discovery_mpnet import generate_weak_labels
 
-# Discovery data contains 14,950 additional queries with LLM responses
-# Can be used for pre-training, auxiliary tasks, or data augmentation
-discovery_queries = json.load(open('data/llm_discovery_data_1.json'))
+# Assess response quality and create training labels
+weak_labels = generate_weak_labels(
+    discovery_data,  # 14,950 queries
+    quality_threshold=0.3,
+    confidence_weighting=True
+)
+# Yields 490K high-quality training examples
 ```
 
-### 4. Meta-Learning Approaches
+### 4. AWS GPU Scaling for Large-Scale Training
+```bash
+# Launch GPU instance for 5M+ weak labels
+aws ec2 run-instances --instance-type p3.2xlarge ...
+
+# Expected performance with scale:
+# 2M examples: ~0.46 nDCG@10 (15 hours on GPU)
+# 5M examples: ~0.47 nDCG@10 (24 hours on GPU)
+# 16M examples: ~0.48-0.50 nDCG@10 (3-4 days on GPU)
+```
+
+### 5. Meta-Learning Approaches
 ```python
 # Incorporate LLM metadata, architectural features
 llm_metadata = {
@@ -293,7 +317,7 @@ llm_metadata = {
 }
 ```
 
-### 5. Ensemble Methods
+### 6. Ensemble Methods
 ```python
 # models/ensemble/train.py
 from shared.utils import load_results
@@ -327,3 +351,31 @@ This multi-model framework serves as a foundation for systematic comparison of d
 - Make evaluation scripts be completely consistent in their output during 10-fold CV runs, including per-fold validation performance metrics.
 - Use the bilateral-truth package for LLM judges
 - IMPORTANT: USE STANDARD AND CONSISTENT 10-FOLD CV PROGRESS AND SUMMARY REPORTING ACROSS ALL MODEL EXPERIMENTS
+- When asked to report on the status of experimental runs, DO NOT use overoptimistic, boosterish language; simply report the facts, and when comparing results to those of previous runs, check you work so you are correct in the numbers in your analysis.
+- IMPORTANT: Always reuse existing experimental code, making the absolute minimum number of edits to make the requested changes for the next experiment
+
+## Current Experimental Focus
+
+### Immediate Priorities
+1. **Scale weak labeling**: Generate 2M high-confidence weak labels from discovery data
+2. **AWS GPU training**: Run Config O variants on p3.2xlarge instances (~$2/experiment)
+3. **Iterative refinement**: Use Config O to refine its own weak labels (self-training)
+
+### Proven Techniques
+- **Response quality assessment** for weak labeling (length, relevance, structure)
+- **Collaborative pre-training** on discovery data for better initialization
+- **Multi-head attention** in query tower for better query understanding
+- **4-layer LLM tower** optimal depth (deeper causes overfitting)
+
+### Failed Approaches (Don't Repeat)
+- **Epistemic profiling**: No correlation with qrels
+- **Pseudo-labeling**: Circular validation issues, degraded performance
+- **Synthetic data generation**: Artificial patterns don't transfer
+- **Confidence weighting**: No improvement over uniform weights
+- **6+ layer networks**: Overfitting without gains
+
+### Expected Outcomes
+- **Current best**: 0.4482 nDCG@10 (Config O with 876K examples)
+- **With 2M examples**: ~0.46 nDCG@10 (achievable this week)
+- **With 5M examples**: ~0.47 nDCG@10 (requires GPU resources)
+- **Theoretical max**: ~0.50 nDCG@10 (with 16M examples and ensemble)

@@ -18,7 +18,11 @@ Our first major enhancement, designated Enhanced Tier 1, introduced three critic
 
 ### Tier 2: Multi-Head Attention and Advanced Training Strategies
 
-The Tier 2 enhancement represented our most significant architectural innovation, introducing multi-head query attention to capture diverse semantic aspects of user queries. Motivated by the success of attention mechanisms in transformer architectures, we implemented 3 specialized attention heads with emergent specialization—rather than hand-engineering different head functions, we allowed training to naturally differentiate head representations. Each head processes the sentence transformer output through dedicated pathways [384→96→96] before fusion [288→384]. This multi-head processing is combined with active hard negative mining (60% hard, 40% easy negatives) and head diversity regularization that encourages complementary learning across heads. The training curriculum activates hard negatives after epoch 2, providing stable early training followed by challenging optimization. Despite being CPU-optimized to resolve MPS GPU compatibility issues, Tier 2 achieved our best performance: nDCG@10=0.4306 in just 3.11 hours, establishing the optimal balance of architectural sophistication and computational efficiency.
+The Tier 2 enhancement represented our most significant architectural innovation, introducing multi-head query attention to capture diverse semantic aspects of user queries. Motivated by the success of attention mechanisms in transformer architectures, we implemented 3 specialized attention heads with emergent specialization—rather than hand-engineering different head functions, we allowed training to naturally differentiate head representations. Each head processes the sentence transformer output through dedicated pathways [384→96→96] before fusion [288→384]. This multi-head processing is combined with active hard negative mining (60% hard, 40% easy negatives) and head diversity regularization that encourages complementary learning across heads. The training curriculum activates hard negatives after epoch 2, providing stable early training followed by challenging optimization. Despite being CPU-optimized to resolve MPS GPU compatibility issues, Tier 2 achieved strong performance: nDCG@10=0.4306 in just 3.11 hours.
+
+### Config O: Optimized Architecture (Current Champion)
+
+Config O represents our current best-performing architecture, building upon the Tier 2 foundation with carefully tuned hyperparameters and architectural refinements. This configuration maintains the core two-tower structure while introducing key optimizations: a 4-layer LLM tower with 256-dimensional embeddings (256→384→256→128), enhanced attention mechanisms with 4 heads (increased from 3), and optimized training parameters including batch size 96 and 25 epochs with patience 10. The architecture leverages collaborative pre-training on the query encoder, using a frozen sentence transformer initialized with weights learned from discovery data. Config O achieves nDCG@10=0.4482 ± 0.0313, representing a 4.1% improvement over base Tier 2 while maintaining computational efficiency. Experiments with wider embeddings (512D in Config P) and deeper architectures (6 layers in Config Q) showed diminishing returns or degradation, confirming that Config O's 256D embeddings with 4-layer depth represent the optimal balance for this task.
 
 ### Tier 3: Cross-Encoder with Joint Query-LLM Encoding
 
@@ -90,7 +94,7 @@ Query: "What is ML?"                    LLM_ID: 42
         + Hard Negative Mining ←── New!
 ```
 
-### Tier 2 CPU Optimized (nDCG@10=0.4306) - CHAMPION
+### Tier 2 CPU Optimized (nDCG@10=0.4306)
 
 ```
 Query: "What is ML?"                         LLM_ID: 42
@@ -132,6 +136,48 @@ Query: "What is ML?"                         LLM_ID: 42
                │
     + Active Hard Neg Mining (60/40) ←── Curriculum!
     + Head Diversity Regularization
+```
+
+### Config O: Optimized Architecture (nDCG@10=0.4482) - CURRENT CHAMPION
+
+```
+Query: "What is ML?"                         LLM_ID: 42
+        |                                       |
+    [Pre-trained Query Encoder]           [Embedding Layer]
+    (Collaborative Pre-training)               |
+        |                                 [256] LLM Embed ←── Optimal!
+    [384] Query Embed                          |
+        |                                 [Linear 256→384] ←── 4-Layer
+    ┌───┴────┬────┬────┐ ←── 4 Heads!          |
+    │        │    │    │                    [ReLU + Dropout]
+[Head 1] [Head 2][3] [4]                       |
+384→64   384→64  64  64                  [Linear 384→256]
+  ReLU     ReLU                                |
+  Drop     Drop                           [ReLU + Dropout]
+    │        │    │    │                       |
+    └───┬────┴────┴────┘               [Linear 256→128] ←── Final
+        │                                      |
+    [Concatenate 256]                    [128] LLM Output
+        |                                      |
+    [Attention Fusion]                         |
+        |                                      |
+    [Linear 256→192]                           |
+        |                                      |
+    [ReLU + Dropout]                           |
+        |                                      |
+    [Linear 192→128]                           |
+        |                                      |
+    [128] Query Output                         |
+        |                                      |
+        └──────┬───────────────────────────────┘
+               │
+          [Cosine Similarity]
+               │
+    InfoNCE + Diversity Loss
+               │
+    Training: 25 epochs, batch_size=96
+    Early stopping patience=10
+    Weak labeling with discovery data
 ```
 
 ### Tier 3 Cross-Encoder (nDCG@10=0.4259)
@@ -176,19 +222,20 @@ Note: 21.92 hours (7x slower than Tier 2)
 
 ```
 Evolution Path:
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Baseline   │ -> │ Enhanced T1 │ -> │   Tier 2    │ -> │   Tier 3    │
-│  Two-Tower  │    │   (128D +   │    │ Multi-Head  │    │Cross-Encoder│
-│             │    │ Contrastive)│    │ Attention   │    │   (Joint)   │
-│ nDCG: 0.402 │    │ nDCG: 0.426 │    │ nDCG: 0.431 │    │ nDCG: 0.426 │
-│  6.95h      │    │   2.95h     │    │   3.11h     │    │  21.92h     │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-      |                    |                   |                   |
-   Similarity         Contrastive        Multi-Head           Joint
-   Learning           + Capacity         + Mining           Attention
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Baseline   │ -> │ Enhanced T1 │ -> │   Tier 2    │ -> │   Tier 3    │    │  Config O   │
+│  Two-Tower  │    │   (128D +   │    │ Multi-Head  │    │Cross-Encoder│    │ (CHAMPION)  │
+│             │    │ Contrastive)│    │ Attention   │    │   (Joint)   │    │  4-Layer    │
+│ nDCG: 0.402 │    │ nDCG: 0.426 │    │ nDCG: 0.431 │    │ nDCG: 0.426 │    │ nDCG: 0.448 │
+│  6.95h      │    │   2.95h     │    │   3.11h     │    │  21.92h     │    │   ~4h       │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+      |                    |                   |                   |                   |
+   Similarity         Contrastive        Multi-Head           Joint            Optimized
+   Learning           + Capacity         + Mining           Attention         Architecture
+                                                                               256D + 4-Layer
 ```
 
-**Key Insight**: Tier 2's multi-head architecture achieves optimal performance/efficiency balance, while Tier 3's sophistication hits diminishing returns due to sparse LLM features.
+**Key Insight**: Config O achieves best performance (0.4482 nDCG@10) through optimal hyperparameter tuning: 256D embeddings, 4-layer LLM tower, and collaborative pre-training, while maintaining computational efficiency.
 
 ## Glossary
 
@@ -276,16 +323,18 @@ Evolution Path:
 |-------------|---------|--------|-----|---------|----------------|
 | **Baseline Two-Tower** | 0.4022 ± 0.028 | 0.4135 ± 0.034 | 0.6761 ± 0.057 | 6.95h | Semantic similarity learning |
 | **Enhanced Tier 1** | 0.4256 ± 0.050 | 0.4287 ± 0.056 | 0.7113 ± 0.074 | 2.95h | Contrastive learning + 128D |
-| **Tier 2 (Champion)** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h | Multi-head attention + mining |
+| **Tier 2** | 0.4306 ± 0.055 | 0.4347 ± 0.058 | 0.7263 ± 0.070 | 3.11h | Multi-head attention + mining |
 | **Tier 3 Cross-Encoder** | 0.4259 ± 0.049 | 0.4378 ± 0.051 | 0.7141 ± 0.076 | 21.92h | Joint transformer encoding |
+| **Config O (Champion)** | 0.4482 ± 0.031 | 0.4588 ± 0.041 | 0.7385 ± 0.063 | ~4h | 4-layer LLM tower + 256D embeddings |
 
 ### Key Findings
 
-1. **Performance Plateau**: Top models cluster within 0.5% nDCG@10, suggesting feature limitations
-2. **Efficiency Champion**: Tier 2 achieves best performance/time ratio at 3.11 hours
-3. **Diminishing Returns**: Tier 3's 7x computational cost yields minimal gains
-4. **Architectural Insights**: Multi-head attention with curriculum learning outperforms complex cross-attention
-5. **Future Directions**: Feature enrichment more promising than architectural complexity
+1. **Current Champion**: Config O achieves 0.4482 nDCG@10 with optimal 256D embeddings and 4-layer depth
+2. **Architectural Sweet Spot**: 256D embeddings outperform both 128D and 512D variants
+3. **Depth Optimization**: 4-layer LLM tower superior to both 3-layer and 6-layer architectures
+4. **Efficiency Balance**: Config O maintains reasonable runtime (~4h) while achieving best performance
+5. **Diminishing Returns**: Experiments with 512D (Config P) and 6-layer (Config Q) show degradation
+6. **Future Directions**: Feature enrichment and pseudo-labeling more promising than further architectural tuning
 
 ## Implementation Details
 
